@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - BuildingZone
+  - Enemy
   layers:
   - Default
   - TransparentFX
