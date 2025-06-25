@@ -24,10 +24,13 @@ public class StunTrap : TrapBase
     {
         foreach (var enemy in enemies)
         {
-            if (enemy != null && enemy.IsAlive())
+            if (enemy != null && enemy.IsAlive() && !enemy.IsStunned())
+            {
                 enemy.ApplyStun(stunDuration);
+            }
         }
     }
+
 
     protected override void OnEnemyEnter(Collider other)
     {

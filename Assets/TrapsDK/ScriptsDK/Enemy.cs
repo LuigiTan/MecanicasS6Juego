@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour, IEnemy
     private NavMeshAgent agent;
     private float lastAttack;
     private bool isStunned = false;
+    public bool IsStunned() => isStunned;
+
 
     void Start()
     {
