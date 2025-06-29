@@ -998,8 +998,9 @@ GameObject:
   - component: {fileID: 747893075}
   - component: {fileID: 747893074}
   - component: {fileID: 747893073}
-  - component: {fileID: 747893077}
   - component: {fileID: 747893080}
+  - component: {fileID: 747893082}
+  - component: {fileID: 747893081}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1099,31 +1100,6 @@ Transform:
   - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &747893077
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 747893072}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &747893080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1136,16 +1112,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ccc16dde33c8e34683225852f3ac271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 747893077}
   playerCamera: {fileID: 330585545}
-  speed: 6
-  jumpHeight: 2
-  gravity: -9.81
-  mouseSensitivity: 150
   buildableObjects:
-  - {fileID: 5762372038496888000, guid: f32f7003a0fdcc444bf657d90cd4c770, type: 3}
-  - {fileID: 6053882387328615367, guid: aa319a82ee98c614cb0b008851a9c376, type: 3}
-  - {fileID: 9076861138165098280, guid: 20023a934c63add4c9b551ba7530edae, type: 3}
+  - {fileID: 4966542911467442093, guid: 4b1bba7ed35529846bf0d98a142c89ec, type: 3}
+  - {fileID: 8147609431017476989, guid: f2e0dc1e95628844882bc223ee121b87, type: 3}
+  - {fileID: 3699469735082466769, guid: 6697c650e3ca3d344bee491f0060c36f, type: 3}
   validPlacementMaterial: {fileID: 2100000, guid: 14755cf1890b45d4d9968a4f75c1fe26, type: 2}
   invalidPlacementMaterial: {fileID: 2100000, guid: b06dc1cbc66903c459da213d55b39a5e, type: 2}
   buildableLayer:
@@ -1156,6 +1127,54 @@ MonoBehaviour:
     m_Bits: 64
   buildParent: {fileID: 1950978880}
   maxBuildCount: 10
+--- !u!54 &747893081
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747893072}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &747893082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747893072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d515d007551e242bc8445af2caaf2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 747893081}
+  playerCamera: {fileID: 330585545}
+  speed: 6
+  jumpForce: 5
+  mouseSensitivity: 100
+  groundCheckDistance: 0.2
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,7 +1558,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.70000005}
   m_AnchorMax: {x: 0.54984486, y: 1}
-  m_AnchoredPosition: {x: -0.29473877, y: -0.019699097}
+  m_AnchoredPosition: {x: -0.29473877, y: -0.019683838}
   m_SizeDelta: {x: -0.58940005, y: 0.039499283}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1869709582
@@ -1598,7 +1617,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.95
+  m_fontSize: 56.45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
