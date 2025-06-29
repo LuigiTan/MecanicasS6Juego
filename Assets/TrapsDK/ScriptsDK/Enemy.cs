@@ -30,11 +30,12 @@ public class Enemy : MonoBehaviour, IEnemy
     {
         if (isStunned)
         {
-            agent.isStopped = true;
+            // Don’t let Update override isStopped state
             return;
         }
 
         float distToPlayer = player ? Vector3.Distance(transform.position, player.position) : Mathf.Infinity;
+
         if (distToPlayer < detectionRadius)
         {
             agent.SetDestination(player.position);
@@ -61,6 +62,7 @@ public class Enemy : MonoBehaviour, IEnemy
             agent.SetDestination(goal.position);
         }
     }
+
 
     private void TryAttackPlayer()
     {
@@ -96,18 +98,38 @@ public class Enemy : MonoBehaviour, IEnemy
         }
     }
 
+    private Coroutine stunCoroutine;
+
+    private float stunCooldownTime = 0f;
+
     public void ApplyStun(float seconds)
     {
-        StartCoroutine(StunRoutine(seconds));
+        if (Time.time < stunCooldownTime)
+            return;
+
+        if (stunCoroutine != null)
+            StopCoroutine(stunCoroutine);
+
+        stunCooldownTime = Time.time + seconds;
+        stunCoroutine = StartCoroutine(StunRoutine(seconds));
     }
 
-    public bool IsAlive() => health > 0;
-    public Transform GetTransform() => transform;
 
     private System.Collections.IEnumerator StunRoutine(float time)
     {
         isStunned = true;
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero; // forcibly kill movement
+
         yield return new WaitForSeconds(time);
+
         isStunned = false;
+        agent.isStopped = false;
     }
+
+
+
+
+    public bool IsAlive() => health > 0;
+    public Transform GetTransform() => transform;
 }

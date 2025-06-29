@@ -660,8 +660,6 @@ GameObject:
   - component: {fileID: 647768758}
   - component: {fileID: 647768757}
   - component: {fileID: 647768756}
-  - component: {fileID: 647768761}
-  - component: {fileID: 647768760}
   m_Layer: 0
   m_Name: StunTrap
   m_TagString: Untagged
@@ -753,58 +751,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 647768755}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.86, y: 1.007, z: -3.72}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 1, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 453011322}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2084588417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &647768760
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 647768755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a13148042e0016d4faeb3d3fbac27424, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  attackSpeed: 1
-  activationRadius: 5
-  cost: 100
-  level: 1
-  maxLevel: 3
-  damageMultiplier: 1.5
-  attackSpeedMultiplier: 0.85
-  radiusMultiplier: 1.1
-  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
-  stunDuration: 1.5
---- !u!135 &647768761
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 647768755}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &756682391
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,15 +771,13 @@ GameObject:
   - component: {fileID: 756682394}
   - component: {fileID: 756682393}
   - component: {fileID: 756682392}
-  - component: {fileID: 756682397}
-  - component: {fileID: 756682396}
   m_Layer: 0
   m_Name: ShootTurret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &756682392
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -908,61 +860,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 756682391}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.328, y: 0.5, z: -2.0466027}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1949876400}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2042591709}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &756682396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 756682391}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4387d2e7af4e5e949b97e664452fa646, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  attackSpeed: 1
-  activationRadius: 5
-  cost: 100
-  level: 1
-  maxLevel: 3
-  damageMultiplier: 1.5
-  attackSpeedMultiplier: 0.85
-  radiusMultiplier: 1.1
-  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
-  projectilePrefab: {fileID: 5347324358584888435, guid: 311e33fb852ec8c4394e1770289b02c3, type: 3}
-  firePoint: {fileID: 1355879943}
-  projectileSpeed: 10
-  projectileDamage: 10
---- !u!135 &756682397
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 756682391}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &791546880
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,15 +880,13 @@ GameObject:
   - component: {fileID: 791546883}
   - component: {fileID: 791546882}
   - component: {fileID: 791546881}
-  - component: {fileID: 791546886}
-  - component: {fileID: 791546885}
   m_Layer: 0
   m_Name: DOTTrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &791546881
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1068,58 +971,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791546880}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.932, y: 1, z: -1.1420941}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 548880154}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1421150421}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &791546885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 791546880}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ad04711077e7df49a269b37149b6b0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  attackSpeed: 1
-  activationRadius: 5
-  cost: 100
-  level: 1
-  maxLevel: 3
-  damageMultiplier: 1.5
-  attackSpeedMultiplier: 0.85
-  radiusMultiplier: 1.1
-  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
-  damagePerTick: 5
---- !u!135 &791546886
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 791546880}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &941847184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1542,6 +1401,84 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1949876400}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1421150418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1421150421}
+  - component: {fileID: 1421150420}
+  - component: {fileID: 1421150419}
+  m_Layer: 0
+  m_Name: DOTTrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1421150419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421150418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ad04711077e7df49a269b37149b6b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attackSpeed: 1
+  activationRadius: 5
+  cost: 100
+  level: 1
+  maxLevel: 3
+  damageMultiplier: 1.5
+  attackSpeedMultiplier: 0.85
+  radiusMultiplier: 1.1
+  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
+  damagePerTick: 5
+--- !u!135 &1421150420
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421150418}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1421150421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421150418}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.932, y: 1, z: -1.1420941}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 791546884}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1949876399
 GameObject:
   m_ObjectHideFlags: 0
@@ -1653,6 +1590,166 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1949876399}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2042591707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2042591709}
+  - component: {fileID: 2042591708}
+  - component: {fileID: 2042591710}
+  m_Layer: 0
+  m_Name: TurretTrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!135 &2042591708
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042591707}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 8
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &2042591709
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042591707}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.21, y: 0.542, z: -1.601}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 756682395}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2042591710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042591707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4387d2e7af4e5e949b97e664452fa646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attackSpeed: 1
+  activationRadius: 5
+  cost: 100
+  level: 1
+  maxLevel: 3
+  damageMultiplier: 1.5
+  attackSpeedMultiplier: 0.85
+  radiusMultiplier: 1.1
+  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
+  projectilePrefab: {fileID: 5347324358584888435, guid: 311e33fb852ec8c4394e1770289b02c3, type: 3}
+  firePoint: {fileID: 1355879943}
+  projectileSpeed: 10
+  projectileDamage: 10
+--- !u!1 &2084588414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2084588417}
+  - component: {fileID: 2084588416}
+  - component: {fileID: 2084588415}
+  m_Layer: 0
+  m_Name: StunTrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &2084588415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084588414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13148042e0016d4faeb3d3fbac27424, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attackSpeed: 1
+  activationRadius: 5
+  cost: 100
+  level: 1
+  maxLevel: 3
+  damageMultiplier: 1.5
+  attackSpeedMultiplier: 0.85
+  radiusMultiplier: 1.1
+  rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
+  stunDuration: 1.5
+  syncInterval: 0.5
+--- !u!135 &2084588416
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084588414}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 4
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &2084588417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084588414}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.89, y: 1, z: -2.94}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 647768759}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3238440241943555347
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1663,15 +1760,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4801950147793469893, guid: 746a317a542f1aa428ea8af9998e30f3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.009
+      value: -7.93
       objectReference: {fileID: 0}
     - target: {fileID: 4801950147793469893, guid: 746a317a542f1aa428ea8af9998e30f3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.51
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4801950147793469893, guid: 746a317a542f1aa428ea8af9998e30f3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.118
+      value: -5.39
       objectReference: {fileID: 0}
     - target: {fileID: 4801950147793469893, guid: 746a317a542f1aa428ea8af9998e30f3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1806,8 +1903,8 @@ SceneRoots:
   - {fileID: 941847188}
   - {fileID: 6907450895594581714}
   - {fileID: 3238440241943555347}
-  - {fileID: 647768759}
-  - {fileID: 791546884}
-  - {fileID: 756682395}
   - {fileID: 1147611386}
   - {fileID: 112173782}
+  - {fileID: 2084588417}
+  - {fileID: 1421150421}
+  - {fileID: 2042591709}
