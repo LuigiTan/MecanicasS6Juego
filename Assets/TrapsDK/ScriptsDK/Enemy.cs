@@ -10,6 +10,10 @@ public class Enemy : MonoBehaviour, IEnemy
     public float damage = 5f;
     public float attackDelay = 1f;
 
+    [Header("Movement")]
+    public float baseSpeed = 3.5f;
+    public float speedModifier = 1.0f; // Multiplier
+
     private Transform player;
     private TrapBase currentTargetTrap;
     private Transform goal;
@@ -18,12 +22,17 @@ public class Enemy : MonoBehaviour, IEnemy
     private bool isStunned = false;
     public bool IsStunned() => isStunned;
 
+    [Header("Economy")]
+    public int moneyReward = 25;
+    private bool isDead = false;
+
 
     void Start()
     {
         player = GameObject.FindWithTag("Player")?.transform;
         goal = GameObject.Find("Goal").transform;
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = baseSpeed * speedModifier;
     }
 
     void Update()
@@ -90,13 +99,24 @@ public class Enemy : MonoBehaviour, IEnemy
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         health -= amount;
         if (health <= 0)
         {
-            PlayerStats.Instance.AddMoney(25);
-            Destroy(gameObject);
+            Die();
         }
     }
+
+    private void Die()
+    {
+        if (isDead) return;
+
+        isDead = true;
+        PlayerStats.Instance?.AddMoney(moneyReward);
+        Destroy(gameObject);
+    }
+
 
     private Coroutine stunCoroutine;
 
