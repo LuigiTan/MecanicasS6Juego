@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4037709699761994226}
   - component: {fileID: 7209601324076308405}
   - component: {fileID: 2611191950112082485}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -158,6 +158,9 @@ MonoBehaviour:
   attackRange: 1.2
   damage: 5
   attackDelay: 1
+  baseSpeed: 3.5
+  speedModifier: 1
+  moneyReward: 25
 --- !u!195 &2611191950112082485
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -192,7 +195,7 @@ GameObject:
   - component: {fileID: 6946119926687827410}
   - component: {fileID: 4639266250489246354}
   - component: {fileID: 7092592959303956797}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
