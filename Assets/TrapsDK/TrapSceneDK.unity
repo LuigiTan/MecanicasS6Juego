@@ -193,7 +193,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0bb945493d48a634485b11eed36f5191, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1227117262}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0bb945493d48a634485b11eed36f5191, type: 3}
       insertIndex: -1
@@ -224,8 +227,8 @@ MonoBehaviour:
   damage: 10
   attackSpeed: 1
   weaponType: 2
-  projectilePrefab: {fileID: 0}
-  shootPoint: {fileID: 0}
+  projectilePrefab: {fileID: 4706042014697808751, guid: 5403cc567537c174aa1b2204a47dc470, type: 3}
+  shootPoint: {fileID: 1227117262}
   projectileForce: 10
   upwardForce: 2
 --- !u!1 &17775427
@@ -368,6 +371,37 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &68684059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 68684060}
+  m_Layer: 0
+  m_Name: ShootingPointRanged
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &68684060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68684059}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.003, y: -0.012, z: -3.892}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2098779792}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &112173780
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,7 +650,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 91f4d4ed7805ae54da643f0ce3185085, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1253235583}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 91f4d4ed7805ae54da643f0ce3185085, type: 3}
       insertIndex: -1
@@ -650,10 +687,10 @@ MonoBehaviour:
   projectilePrefab: {fileID: 0}
   attackRange: 2
   attackRadius: 1.2
-  attackOrigin: {fileID: 17775430}
+  attackOrigin: {fileID: 1253235583}
   enemyMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   weaponModel: {fileID: 626858659}
   readyOffset: {x: 0, y: -0.1, z: -0.4}
   animationSpeed: 5
@@ -961,6 +998,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1227117261
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1227117262}
+  m_Layer: 0
+  m_Name: ShootingPointAoE
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1227117262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227117261}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0.7071068, w: 0}
+  m_LocalPosition: {x: 584, y: 0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7946411}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 180}
 --- !u!1 &1247988590
 GameObject:
   m_ObjectHideFlags: 0
@@ -1103,6 +1171,37 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 41f924483d319234b88771eb888521de, type: 2}
   m_BuildHeightMesh: 0
+--- !u!1 &1253235582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1253235583}
+  m_Layer: 0
+  m_Name: AttackOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1253235583
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253235582}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5536816, y: -0, z: 0.000000009313224, w: 0.8327285}
+  m_LocalPosition: {x: -4.52, y: -0.55, z: 0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 626858659}
+  m_LocalEulerAnglesHint: {x: 67.24, y: 0, z: 0}
 --- !u!1 &1321750437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,8 +1413,8 @@ MonoBehaviour:
   playerCamera: {fileID: 17775429}
   weapons:
   - {fileID: 626858661}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2098779794}
+  - {fileID: 7946413}
 --- !u!1001 &2098779791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1390,7 +1489,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: aca6ad096bdd3ab4dbfe15255f155abd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 68684060}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: aca6ad096bdd3ab4dbfe15255f155abd, type: 3}
       insertIndex: -1
@@ -1421,8 +1523,8 @@ MonoBehaviour:
   damage: 10
   attackSpeed: 1
   weaponType: 1
-  projectilePrefab: {fileID: 0}
-  shootPoint: {fileID: 0}
+  projectilePrefab: {fileID: 178084580789531502, guid: cea1c9ffc397ac447b48775a9fdbcbc8, type: 3}
+  shootPoint: {fileID: 68684060}
   projectileSpeed: 15
   maxDistance: 50
 --- !u!1001 &2124751052

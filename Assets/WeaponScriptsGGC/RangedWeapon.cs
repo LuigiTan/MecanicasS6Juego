@@ -15,8 +15,10 @@ public class RangedWeapon : BaseWeapon
             return;
         }
 
-        // Direcci�n de disparo: recto hacia adelante
-        Vector3 direction = shootPoint.forward;
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        Vector3 targetPoint = ray.GetPoint(100f); // punto lejano
+
+        Vector3 direction = (targetPoint - shootPoint.position).normalized;
 
         // Instancia el proyectil
         GameObject proj = Instantiate(projectilePrefab, shootPoint.position, Quaternion.LookRotation(direction));
