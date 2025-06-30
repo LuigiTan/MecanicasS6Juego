@@ -180,13 +180,15 @@ MonoBehaviour:
   health: 100
   attackSpeed: 1
   activationRadius: 5
-  cost: 100
+  cost: 200
   level: 1
   maxLevel: 3
   damageMultiplier: 1.5
   attackSpeedMultiplier: 0.85
   radiusMultiplier: 1.1
   rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
+  upgradeText: {fileID: 0}
+  upgradeLevelText: {fileID: 0}
   damagePerTick: 5
 --- !u!1 &9041425856930972486
 GameObject:
@@ -216,7 +218,7 @@ Transform:
   m_GameObject: {fileID: 9041425856930972486}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
