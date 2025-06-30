@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 [RequireComponent(typeof(SphereCollider))]
 public abstract class TrapBase : MonoBehaviour
@@ -23,12 +24,17 @@ public abstract class TrapBase : MonoBehaviour
 
     protected SphereCollider sphereCollider;
     protected bool playerNearby = false;
+    public TextMeshProUGUI upgradeText;
+    public TextMeshProUGUI upgradeLevelText;
 
     protected virtual void Start()
     {
         sphereCollider = GetComponent<SphereCollider>();
         sphereCollider.isTrigger = true;
         sphereCollider.radius = activationRadius;
+
+        upgradeText.text = "";
+        upgradeLevelText.text = "";
 
         if (rangeIndicatorPrefab)
         {
@@ -63,6 +69,8 @@ public abstract class TrapBase : MonoBehaviour
         {
             level++;
             UpgradeStats();
+            upgradeText.text = "Upgrade Cost: $" + cost;
+            upgradeLevelText.text = "Trap Level: $" + level + "\nHealth: " + health + "\nAttack Speed: " + attackSpeed + "\nActivation Radius: " + activationRadius;
         }
     }
 
@@ -82,7 +90,11 @@ public abstract class TrapBase : MonoBehaviour
         if (other.CompareTag("Enemy"))
             OnEnemyEnter(other);
         else if (other.CompareTag("Player"))
+        {
             playerNearby = true;
+            upgradeText.text = "Upgrade Cost: $" + cost;
+            upgradeLevelText.text = "Trap Level: $" + level + "\nHealth: " + health + "\nAttack Speed: " + attackSpeed + "\nActivation Radius: " + activationRadius;
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -90,6 +102,10 @@ public abstract class TrapBase : MonoBehaviour
         if (other.CompareTag("Enemy"))
             OnEnemyExit(other);
         else if (other.CompareTag("Player"))
+        {
             playerNearby = false;
+            upgradeText.text = "";
+            upgradeLevelText.text = "";
+        }
     }
 }
