@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Search;
 using UnityEngine;
 
@@ -27,6 +28,9 @@ public class PlayerConstruction : MonoBehaviour
     private int buildCount = 0;
 
     private Dictionary<GameObject, int> trapCounts = new Dictionary<GameObject, int>();
+
+    [SerializeField] private TextMeshProUGUI upgradeText;
+    [SerializeField] private TextMeshProUGUI upgradeLevelText;
 
     // Optional: limits per trap type (match buildableObjects index)
     public List<int> trapLimits = new List<int>();
@@ -168,19 +172,24 @@ public class PlayerConstruction : MonoBehaviour
         // Use bounds center and extents to define overlap box
         Collider[] colliders = Physics.OverlapBox(bounds.center, bounds.extents, Quaternion.identity, obstructionLayer);
 
-        // Check if overlapping anything and still in valid zone
-        canPlaceObject = (colliders.Length == 0 && isInBuildingZone);
+        GameObject trapPrefab = buildableObjects[currentBuildIndex];
+        TrapBase trap = trapPrefab.GetComponent<TrapBase>();
+        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
+        int currentCount = trapCounts.ContainsKey(trapPrefab) ? trapCounts[trapPrefab] : 0;
+        bool hasMoney = PlayerStats.Instance.money >= trap.cost;
+
+        canPlaceObject = (colliders.Length == 0 && isInBuildingZone && hasMoney && currentCount < trapLimit);
 
         foreach (Renderer renderer in previewRenderers)
         {
             renderer.material = canPlaceObject ? validPlacementMaterial : invalidPlacementMaterial;
         }
 
-        // Optional debug to see what’s interfering
         if (!canPlaceObject && colliders.Length > 0)
         {
             Debug.Log("Blocked by: " + colliders[0].name);
         }
+
     }
 
 
@@ -203,18 +212,15 @@ public class PlayerConstruction : MonoBehaviour
     void PlaceObject()
     {
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
-
-        // Get cost and limit
-        TrapBase trap = trapPrefab.GetComponent<TrapBase>();
+        TrapBase trapData = trapPrefab.GetComponent<TrapBase>();
         int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
 
-        // Track current count
         if (!trapCounts.ContainsKey(trapPrefab))
             trapCounts[trapPrefab] = 0;
 
         int currentCount = trapCounts[trapPrefab];
 
-        if (trap == null)
+        if (trapData == null)
         {
             Debug.LogWarning("Trap prefab is missing TrapBase component.");
             return;
@@ -226,18 +232,39 @@ public class PlayerConstruction : MonoBehaviour
             return;
         }
 
-        if (!PlayerStats.Instance.SpendMoney(trap.cost))
+        if (!PlayerStats.Instance.SpendMoney(trapData.cost))
         {
             Debug.Log("Not enough money to place trap.");
             return;
         }
 
-        // All good — place trap
+        // Instantiate and assign UI
         GameObject placed = Instantiate(trapPrefab, previewObject.transform.position, previewObject.transform.rotation, buildParent);
+        TrapBase placedTrap = placed.GetComponent<TrapBase>();
+
+        // Assign UI references here
+        placedTrap.upgradeText = upgradeText;
+        placedTrap.upgradeLevelText = upgradeLevelText;
+
+
         trapCounts[trapPrefab]++;
         buildCount++;
+
     }
 
+    public void OnTrapDestroyed(TrapBase trap)
+    {
+        foreach (GameObject prefab in trapCounts.Keys)
+        {
+            TrapBase test = prefab.GetComponent<TrapBase>();
+            if (test != null && test.GetType() == trap.GetType())
+            {
+                trapCounts[prefab] = Mathf.Max(0, trapCounts[prefab] - 1);
+                buildCount = Mathf.Max(0, buildCount - 1);
+                return;
+            }
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

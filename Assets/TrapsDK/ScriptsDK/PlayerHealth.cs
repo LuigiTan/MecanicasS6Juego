@@ -1,6 +1,7 @@
 
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -26,10 +27,8 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void Respawn()
+    public void Respawn()
     {
-        currentHealth = maxHealth;
-        healthBar.text = "Health: " + currentHealth;
-        transform.position = spawnPoint;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
