@@ -51,6 +51,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject prefab = GetRandomEnemy();
         if (prefab != null)
             Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+        Debug.Log("Instantiated: " + prefab);
     }
 
     private IEnumerator SpawnHorde()

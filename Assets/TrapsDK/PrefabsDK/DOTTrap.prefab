@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1008055575163104094
+--- !u!1 &540607369590214102
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8096526740651753903}
-  - component: {fileID: 381799028101500893}
-  - component: {fileID: 6988733984713916302}
-  - component: {fileID: 1898665033368610808}
+  - component: {fileID: 4305966520001353066}
+  - component: {fileID: 7212641078088290096}
+  - component: {fileID: 1319214165610168813}
+  - component: {fileID: 7850536098999912477}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -19,36 +19,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8096526740651753903
+--- !u!4 &4305966520001353066
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008055575163104094}
+  m_GameObject: {fileID: 540607369590214102}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7070353, w: 0.7071783}
   m_LocalPosition: {x: 0, y: 1.1760001, z: 0}
   m_LocalScale: {x: 0.5, y: 2, z: 1.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7802065838665396760}
+  m_Father: {fileID: 4949846591531443539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 89.988}
---- !u!33 &381799028101500893
+--- !u!33 &7212641078088290096
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008055575163104094}
+  m_GameObject: {fileID: 540607369590214102}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6988733984713916302
+--- !u!23 &1319214165610168813
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008055575163104094}
+  m_GameObject: {fileID: 540607369590214102}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -87,13 +87,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &1898665033368610808
+--- !u!136 &7850536098999912477
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1008055575163104094}
+  m_GameObject: {fileID: 540607369590214102}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -110,7 +110,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &8147609431017476989
+--- !u!1 &614878349156486855
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,9 +118,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 128981817644957874}
-  - component: {fileID: 9131402526481126950}
-  - component: {fileID: 7276458986246095640}
+  - component: {fileID: 3334042298166669956}
+  - component: {fileID: 828137463584190012}
+  - component: {fileID: 2829110089716141853}
   m_Layer: 6
   m_Name: DOTTrap
   m_TagString: Untagged
@@ -128,29 +128,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &128981817644957874
+--- !u!4 &3334042298166669956
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8147609431017476989}
+  m_GameObject: {fileID: 614878349156486855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -21.158, y: 0.463, z: -16.602093}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7802065838665396760}
+  - {fileID: 4949846591531443539}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &9131402526481126950
+--- !u!135 &828137463584190012
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8147609431017476989}
+  m_GameObject: {fileID: 614878349156486855}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -165,13 +165,13 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7276458986246095640
+--- !u!114 &2829110089716141853
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8147609431017476989}
+  m_GameObject: {fileID: 614878349156486855}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ad04711077e7df49a269b37149b6b0a, type: 3}
@@ -180,15 +180,17 @@ MonoBehaviour:
   health: 100
   attackSpeed: 1
   activationRadius: 5
-  cost: 100
+  cost: 200
   level: 1
   maxLevel: 3
   damageMultiplier: 1.5
   attackSpeedMultiplier: 0.85
-  radiusMultiplier: 1.1
+  radiusMultiplier: 1.3
   rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
+  upgradeText: {fileID: 0}
+  upgradeLevelText: {fileID: 0}
   damagePerTick: 5
---- !u!1 &9041425856930972486
+--- !u!1 &5949346974882338541
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -196,10 +198,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7802065838665396760}
-  - component: {fileID: 4238763948067210357}
-  - component: {fileID: 816802242633998991}
-  - component: {fileID: 4749831299284818626}
+  - component: {fileID: 4949846591531443539}
+  - component: {fileID: 3797887402975983997}
+  - component: {fileID: 4663296215441931275}
+  - component: {fileID: 8143415255550410187}
   m_Layer: 0
   m_Name: DOTTrap
   m_TagString: Untagged
@@ -207,37 +209,37 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7802065838665396760
+--- !u!4 &4949846591531443539
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041425856930972486}
+  m_GameObject: {fileID: 5949346974882338541}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8096526740651753903}
-  m_Father: {fileID: 128981817644957874}
+  - {fileID: 4305966520001353066}
+  m_Father: {fileID: 3334042298166669956}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4238763948067210357
+--- !u!33 &3797887402975983997
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041425856930972486}
+  m_GameObject: {fileID: 5949346974882338541}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &816802242633998991
+--- !u!23 &4663296215441931275
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041425856930972486}
+  m_GameObject: {fileID: 5949346974882338541}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -276,13 +278,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4749831299284818626
+--- !u!136 &8143415255550410187
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041425856930972486}
+  m_GameObject: {fileID: 5949346974882338541}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
