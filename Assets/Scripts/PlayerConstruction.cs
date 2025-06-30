@@ -1,16 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
 
 public class PlayerConstruction : MonoBehaviour
 {
     [Header("Player Settings")]
-    public CharacterController controller;
     public Camera playerCamera;
-    public float speed = 6f;
-    public float jumpHeight = 2f;
-    public float gravity = -9.81f;
-    public float mouseSensitivity = 100f;
 
     [Header("Building Settings")]
     public List<GameObject> buildableObjects;
@@ -29,19 +26,27 @@ public class PlayerConstruction : MonoBehaviour
     private int currentBuildIndex = 0;
     private int buildCount = 0;
 
-    private Vector3 velocity;
-    private float xRotation = 0f;
+    private Dictionary<GameObject, int> trapCounts = new Dictionary<GameObject, int>();
+
+    // Optional: limits per trap type (match buildableObjects index)
+    public List<int> trapLimits = new List<int>();
+
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Optional safety: default trap limit per type
+        while (trapLimits.Count < buildableObjects.Count)
+        {
+            trapLimits.Add(maxBuildCount);
+        }
     }
+
 
     void Update()
     {
         HandleConstructionModeToggle();
-        HandlePlayerMovement();
-        HandleCameraLook();
 
         if (isInConstructionMode)
         {
@@ -56,41 +61,6 @@ public class PlayerConstruction : MonoBehaviour
         //else
         //{
         //}
-    }
-
-    // ---------------------- PLAYER MOVEMENT ----------------------
-    void HandlePlayerMovement()
-    {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        controller.Move(move * speed * Time.deltaTime);
-
-        if (controller.isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-    }
-
-    void HandleCameraLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
     }
 
     // ---------------------- CONSTRUCTION MODE ----------------------
@@ -123,10 +93,38 @@ public class PlayerConstruction : MonoBehaviour
         if (buildableObjects.Count > 0)
         {
             previewObject = Instantiate(buildableObjects[currentBuildIndex]);
+
+            // Disable all colliders (not just one)
+            Collider[] colliders = previewObject.GetComponentsInChildren<Collider>();
+            foreach (Collider col in colliders)
+            {
+                col.enabled = false;
+            }
+
+            // Destroy any Rigidbody components to prevent physics interference
+            Rigidbody[] rigidbodies = previewObject.GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody rb in rigidbodies)
+            {
+                Destroy(rb);
+            }
+
+            // Move preview to neutral physics layer
+            SetLayerRecursively(previewObject, LayerMask.NameToLayer("Ignore Raycast"));
+
+            // Get renderers for material change
             previewRenderers = previewObject.GetComponentsInChildren<Renderer>();
-            previewObject.GetComponentInChildren<Collider>().enabled = false;
         }
     }
+
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
+
 
     void HandleObjectSelection()
     {
@@ -160,26 +158,93 @@ public class PlayerConstruction : MonoBehaviour
 
     void CheckPlacementValidity(Vector3 position)
     {
-        Collider[] colliders = Physics.OverlapBox(position, previewObject.transform.localScale / 2, Quaternion.identity, obstructionLayer);
+        // Calculate accurate world bounds from all renderers
+        Bounds bounds = new Bounds(previewObject.transform.position, Vector3.zero);
+        foreach (Renderer r in previewRenderers)
+        {
+            bounds.Encapsulate(r.bounds);
+        }
+
+        // Use bounds center and extents to define overlap box
+        Collider[] colliders = Physics.OverlapBox(bounds.center, bounds.extents, Quaternion.identity, obstructionLayer);
+
+        // Check if overlapping anything and still in valid zone
         canPlaceObject = (colliders.Length == 0 && isInBuildingZone);
 
         foreach (Renderer renderer in previewRenderers)
         {
             renderer.material = canPlaceObject ? validPlacementMaterial : invalidPlacementMaterial;
         }
+
+        // Optional debug to see what’s interfering
+        if (!canPlaceObject && colliders.Length > 0)
+        {
+            Debug.Log("Blocked by: " + colliders[0].name);
+        }
     }
+
+
+    void OnDrawGizmos()
+    {
+        if (previewObject != null)
+        {
+            Bounds bounds = new Bounds(previewObject.transform.position, Vector3.zero);
+            foreach (Renderer r in previewObject.GetComponentsInChildren<Renderer>())
+            {
+                bounds.Encapsulate(r.bounds);
+            }
+
+            Gizmos.color = canPlaceObject ? Color.green : Color.red;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
+        }
+    }
+
 
     void PlaceObject()
     {
-        Instantiate(buildableObjects[currentBuildIndex], previewObject.transform.position, previewObject.transform.rotation, buildParent);
+        GameObject trapPrefab = buildableObjects[currentBuildIndex];
+
+        // Get cost and limit
+        TrapBase trap = trapPrefab.GetComponent<TrapBase>();
+        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
+
+        // Track current count
+        if (!trapCounts.ContainsKey(trapPrefab))
+            trapCounts[trapPrefab] = 0;
+
+        int currentCount = trapCounts[trapPrefab];
+
+        if (trap == null)
+        {
+            Debug.LogWarning("Trap prefab is missing TrapBase component.");
+            return;
+        }
+
+        if (currentCount >= trapLimit)
+        {
+            Debug.Log("Trap limit reached for this type.");
+            return;
+        }
+
+        if (!PlayerStats.Instance.SpendMoney(trap.cost))
+        {
+            Debug.Log("Not enough money to place trap.");
+            return;
+        }
+
+        // All good — place trap
+        GameObject placed = Instantiate(trapPrefab, previewObject.transform.position, previewObject.transform.rotation, buildParent);
+        trapCounts[trapPrefab]++;
         buildCount++;
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("BuildingZone"))
         {
             isInBuildingZone = true;
+            Debug.Log("isInBuildingZone = " + isInBuildingZone);
         }
     }
 
