@@ -8,7 +8,7 @@ public abstract class TrapBase : MonoBehaviour
 {
     [Header("Base Stats")]
     public float health = 100f;
-    public float attackSpeed = 1f;
+    public float attackCooldown = 1f;
     public float activationRadius = 5f;
     public int cost = 100;
     public int level = 1;
@@ -85,7 +85,7 @@ public abstract class TrapBase : MonoBehaviour
                 upgradeLevelText.text =
                     "Trap Level: " + level +
                     "\nHealth: " + health +
-                    "\nAttack Speed: " + attackSpeed +
+                    "\nAttack Cooldown: " + attackCooldown +
                     "\nActivation Radius: " + activationRadius;
             }
 
@@ -128,7 +128,7 @@ public abstract class TrapBase : MonoBehaviour
 
     protected virtual void UpgradeStats()
     {
-        attackSpeed *= attackSpeedMultiplier;
+        attackCooldown *= attackSpeedMultiplier;
         activationRadius *= radiusMultiplier;
         sphereCollider.radius = activationRadius;
         UpdateRangeIndicatorScale();
