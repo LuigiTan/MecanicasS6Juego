@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7299852872545017924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8310862282175138110}
+  - component: {fileID: 7865710071537089347}
+  m_Layer: 0
+  m_Name: EnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8310862282175138110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7299852872545017924}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 25.39, y: 0.29, z: 3.88}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7865710071537089347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7299852872545017924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19ade4a7c8ca134b84c4f3d836d9831, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 8310862282175138110}
+  enemyVariants:
+  - enemyPrefab: {fileID: 2834546153630414835, guid: caa0f66b33b43024faa73bea6554e3ea, type: 3}
+    weight: 70
+  - enemyPrefab: {fileID: 8653449033442247555, guid: 8b605be81a95d144b9649b16e77cf63a, type: 3}
+    weight: 20
+  - enemyPrefab: {fileID: 6658040938255754912, guid: 63f2fe75b17db354f96047136e4e3649, type: 3}
+    weight: 10
+  timeBetweenSpawns: 3
+  hordeInterval: 15
+  hordeSpawnDelay: 0.3
+  hordeWarningTime: 15
+  postHordePause: 10
+  warningText: {fileID: 0}

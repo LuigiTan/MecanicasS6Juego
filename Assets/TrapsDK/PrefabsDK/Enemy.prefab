@@ -33,7 +33,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 988246175521836366}
+  - {fileID: 3333350163455411335}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &4764185300424151248
@@ -128,6 +128,8 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!1001 &3010877547794490220
+PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
@@ -148,15 +150,15 @@ NavMeshAgent:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.69
+      value: -0.67
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.03
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.159
+      value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -164,7 +166,7 @@ NavMeshAgent:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
       propertyPath: m_LocalRotation.y
@@ -195,8 +197,8 @@ NavMeshAgent:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
---- !u!4 &988246175521836366 stripped
+--- !u!4 &3333350163455411335 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e57793931d2b81b439d1e09f9892166e, type: 3}
-  m_PrefabInstance: {fileID: 737550013456149157}
+  m_PrefabInstance: {fileID: 3010877547794490220}
   m_PrefabAsset: {fileID: 0}
