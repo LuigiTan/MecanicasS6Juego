@@ -10,6 +10,8 @@ public class PlayerHealth : MonoBehaviour
     private Vector3 spawnPoint;
     public TextMeshProUGUI healthBar;
 
+    public GameOver gameOver;
+
     void Start()
     {
         spawnPoint = transform.position;
@@ -23,12 +25,12 @@ public class PlayerHealth : MonoBehaviour
         healthBar.text = "Health: " + currentHealth;
         if (currentHealth <= 0)
         {
-            Respawn();
+            GameOver();
         }
     }
 
-    public void Respawn()
+    public void GameOver()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        gameOver?.ShowGameOver("You Died");
     }
 }
