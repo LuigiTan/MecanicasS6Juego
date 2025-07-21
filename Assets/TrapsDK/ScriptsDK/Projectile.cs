@@ -17,7 +17,11 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        if (target == null || !target.IsAlive()) return;
+        if (target == null || !target.IsAlive())
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Vector3 dir = (target.GetTransform().position - transform.position).normalized;
         transform.position += dir * speed * Time.deltaTime;

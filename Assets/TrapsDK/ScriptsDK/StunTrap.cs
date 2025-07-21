@@ -23,7 +23,7 @@ public class StunTrap : TrapBase
             lastSync = Time.time;
         }
 
-        if (enemies.Count > 0 && Time.time - lastTick >= attackSpeed)
+        if (enemies.Count > 0 && Time.time - lastTick >= attackCooldown)
         {
             PerformAttack();
             lastTick = Time.time;

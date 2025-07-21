@@ -26,14 +26,26 @@ public class Enemy : MonoBehaviour, IEnemy
     public int moneyReward = 25;
     private bool isDead = false;
 
+    private Base baseScript;
 
     void Start()
     {
         player = GameObject.FindWithTag("Player")?.transform;
         goal = GameObject.Find("Goal").transform;
+        baseScript = goal?.GetComponent<Base>();
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = baseSpeed * speedModifier;
+
+        float healthMultiplier = EnemyScaler.GetHealthMultiplier();
+        float damageMultiplier = EnemyScaler.GetDamageMultiplier();
+        float speedMultiplier = EnemyScaler.GetSpeedMultiplier();
+
+        health *= healthMultiplier;
+        damage *= damageMultiplier;
+        agent.speed = baseSpeed * speedModifier * speedMultiplier; // scaled speed
+
+        Debug.Log($"[Enemy Spawned] \nHorde: {EnemyScaler.HordeCount}\n HP: {health}\n DMG: {damage}\n Speed: {agent.speed}");
     }
+
 
     void Update()
     {
@@ -70,8 +82,23 @@ public class Enemy : MonoBehaviour, IEnemy
 
             agent.SetDestination(goal.position);
         }
+
+        if (goal != null && Vector3.Distance(transform.position, goal.position) < attackRange)
+        {
+            TryAttackGoal();
+        }
     }
 
+    private void TryAttackGoal()
+    {
+        if (baseScript == null) return;
+        if (Time.time - lastAttack > attackDelay)
+        {
+            baseScript.TakeDamage(damage);
+            lastAttack = Time.time;
+        }
+
+    }
 
     private void TryAttackPlayer()
     {
