@@ -105,7 +105,7 @@ MonoBehaviour:
   attackDelay: 1
   baseSpeed: 3.5
   speedModifier: 1
-  moneyReward: 25
+  moneyReward: 35
 --- !u!195 &2611191950112082485
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -10,8 +10,19 @@ public class SaveData
     public string sceneName;
     public Vector3 playerPosition;
     public Quaternion playerRotation;
-    public List<PlacedObjectData> placedObjects = new List<PlacedObjectData>();
+    public List<PlacedObjectData> placedObjects = new();
+    public List<EnemyData> enemies = new(); // NEW
+    public int hordeCount;
 }
+
+[System.Serializable]
+public class EnemyData
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public string enemyType; // if you have multiple types of enemies
+}
+
 
 [System.Serializable]
 public class PlacedObjectData
@@ -19,14 +30,19 @@ public class PlacedObjectData
     public string prefabName;
     public Vector3 position;
     public Quaternion rotation;
+
+    public int level;             // Save level
+    public float attackCooldown;  // Save upgraded attack cooldown
+    public float activationRadius; // Save upgraded radius
 }
+
 
 public class PersistentSaveManager : MonoBehaviour
 {
     public static PersistentSaveManager Instance { get; private set; }
 
     public Transform player;
-    public CharacterController controller;
+    public PlayerMovementRB controller;
     public PlayerConstruction constructionScript;
 
     public string saveFileName = "saveData.json";
@@ -75,7 +91,8 @@ public class PersistentSaveManager : MonoBehaviour
         {
             sceneName = SceneManager.GetActiveScene().name,
             playerPosition = player.position,
-            playerRotation = player.rotation
+            playerRotation = player.rotation,
+            hordeCount = HordeManager.Instance != null ? HordeManager.Instance.HordeCount : 0
         };
 
         Debug.Log($"[SAVE] Saved player position: {data.playerPosition}");
@@ -86,14 +103,21 @@ public class PersistentSaveManager : MonoBehaviour
             Debug.Log("[SAVE] Gathering constructed objects...");
             foreach (Transform child in constructionScript.buildParent)
             {
-                
-                data.placedObjects.Add(new PlacedObjectData
+                TrapBase trap = child.GetComponent<TrapBase>();
+
+                PlacedObjectData trapData = new PlacedObjectData
                 {
                     prefabName = child.name.Replace("(Clone)", "").Trim(),
                     position = child.position,
-                    rotation = child.rotation
-                });
+                    rotation = child.rotation,
+                    level = trap != null ? trap.level : 1,
+                    attackCooldown = trap != null ? trap.attackCooldown : 1f,
+                    activationRadius = trap != null ? trap.activationRadius : 5f
+                };
+
+                data.placedObjects.Add(trapData);
             }
+
             Debug.Log($"[SAVE] Saved {data.placedObjects.Count} constructed objects.");
         }
         else
@@ -103,6 +127,18 @@ public class PersistentSaveManager : MonoBehaviour
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
         Debug.Log($"[SAVE] Game saved at: {SavePath}");
+
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (var enemy in enemies)
+        {
+            data.enemies.Add(new EnemyData
+            {
+                position = enemy.transform.position,
+                rotation = enemy.transform.rotation,
+                enemyType = enemy.name.Replace("(Clone)", "").Trim()
+            });
+        }
+        Debug.Log($"[SAVE] Saved {data.enemies.Count} enemies.");
     }
 
     public void LoadGame()
@@ -157,7 +193,7 @@ public class PersistentSaveManager : MonoBehaviour
         // Buscar CharacterController si se puede
         if (player != null && controller == null)
         {
-            controller = player.GetComponent<CharacterController>();
+            controller = player.GetComponent<PlayerMovementRB>();
             if (controller != null)
                 Debug.Log("[UPDATE] CharacterController found.");
         }
@@ -174,6 +210,13 @@ public class PersistentSaveManager : MonoBehaviour
 
     private void ApplyLoadedData()
     {
+        if (HordeManager.Instance != null)
+        {
+            HordeManager.Instance.SetHordeCount(pendingLoadData.hordeCount);
+            Debug.Log($"[LOAD] Restored Horde Count: {pendingLoadData.hordeCount}");
+        }
+
+
         // Buscar referencias en la nueva escena
         if (player == null)
         {
@@ -185,7 +228,7 @@ public class PersistentSaveManager : MonoBehaviour
         if (constructionScript == null)
             constructionScript = Object.FindFirstObjectByType<PlayerConstruction>();
         if (controller == null && player != null)
-            controller = player.GetComponent<CharacterController>();
+            controller = player.GetComponent<PlayerMovementRB>();
 
         if (player == null)
         {
@@ -214,14 +257,36 @@ public class PersistentSaveManager : MonoBehaviour
                 GameObject prefab = constructionScript.buildableObjects.Find(p => p.name == obj.prefabName);
                 if (prefab != null)
                 {
-                    Instantiate(prefab, obj.position, obj.rotation, constructionScript.buildParent);
-                }
-                else
-                {
-                    Debug.LogWarning($"[LOAD] Prefab not found: {obj.prefabName}");
+                    GameObject trapObj = Instantiate(prefab, obj.position, obj.rotation, constructionScript.buildParent);
+                    TrapBase trap = trapObj.GetComponent<TrapBase>();
+
+                    if (trap != null)
+                    {
+                        trap.level = obj.level;
+                        trap.attackCooldown = obj.attackCooldown;
+                        trap.activationRadius = obj.activationRadius;
+
+                        SphereCollider col = trap.GetComponent<SphereCollider>();
+                        if (col != null)
+                            col.radius = obj.activationRadius;
+                    }
                 }
             }
         }
+
+        foreach (var enemyData in pendingLoadData.enemies)
+        {
+            GameObject enemyPrefab = EnemyManager.Instance.GetEnemyPrefab(enemyData.enemyType); // You need to implement this
+            if (enemyPrefab != null)
+            {
+                Instantiate(enemyPrefab, enemyData.position, enemyData.rotation);
+            }
+            else
+            {
+                Debug.LogWarning($"[LOAD] Enemy prefab not found: {enemyData.enemyType}");
+            }
+        }
+
 
         Debug.Log("[LOAD] Game successfully restored.");
         pendingLoadData = null;

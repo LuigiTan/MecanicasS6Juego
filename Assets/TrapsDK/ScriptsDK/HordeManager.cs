@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using TMPro;
 
 public class HordeManager : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class HordeManager : MonoBehaviour
 
     private float nextHordeTime;
     public float hordeInterval = 30f;
+
+    public TextMeshProUGUI waveCount;
 
     void Awake()
     {
@@ -39,7 +42,15 @@ public class HordeManager : MonoBehaviour
     private void TriggerHorde()
     {
         HordeCount++;
+        waveCount.text = "Wave: " + HordeCount;
         Debug.Log($"[HordeManager] Triggering Horde #{HordeCount}");
         OnHordeTriggered?.Invoke();
     }
+
+    public void SetHordeCount(int count)
+    {
+        HordeCount = count;
+        waveCount.text = "Wave: " + HordeCount;
+    }
+
 }
