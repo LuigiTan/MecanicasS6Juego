@@ -8,6 +8,8 @@ public class Base : MonoBehaviour
     public float damageCooldown = 1f;
     public TextMeshProUGUI baseHealth;
     private PlayerHealth playerHealth;
+    
+    public GameOver gameOverManager;
 
     private void Start()
     {
@@ -26,9 +28,11 @@ public class Base : MonoBehaviour
             StartCoroutine(DelayedRespawn(1.5f));
         }
     }
+
     private IEnumerator DelayedRespawn(float delay)
     {
         yield return new WaitForSeconds(delay);
-        playerHealth?.Respawn();
+        gameOverManager?.ShowGameOver("The base Died");
     }
+
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerConstruction : MonoBehaviour
 {
@@ -35,6 +36,11 @@ public class PlayerConstruction : MonoBehaviour
     // Optional: limits per trap type (match buildableObjects index)
     public List<int> trapLimits = new List<int>();
 
+    [Header("Trap UI Icons")]
+    public List<Image> trapIcons;
+    public Color unlockedColor = Color.white;
+    public Color lockedColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+
 
     void Start()
     {
@@ -51,21 +57,21 @@ public class PlayerConstruction : MonoBehaviour
     void Update()
     {
         HandleConstructionModeToggle();
+        UpdateTrapIcons();
 
         if (isInConstructionMode)
         {
             HandleObjectPreview();
             HandleObjectSelection();
 
+
             if (Input.GetMouseButtonDown(0) && canPlaceObject && buildCount < maxBuildCount)
             {
                 PlaceObject();
             }
         }
-        //else
-        //{
-        //}
     }
+
 
     // ---------------------- CONSTRUCTION MODE ----------------------
     void HandleConstructionModeToggle()
@@ -133,17 +139,31 @@ public class PlayerConstruction : MonoBehaviour
     void HandleObjectSelection()
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
+
         if (scroll > 0)
         {
-            currentBuildIndex = (currentBuildIndex + 1) % buildableObjects.Count;
+            int startIndex = currentBuildIndex;
+            do
+            {
+                currentBuildIndex = (currentBuildIndex + 1) % buildableObjects.Count;
+            }
+            while (!IsTrapUnlocked(currentBuildIndex) && currentBuildIndex != startIndex);
+
             CreatePreviewObject();
         }
         else if (scroll < 0)
         {
-            currentBuildIndex = (currentBuildIndex - 1 + buildableObjects.Count) % buildableObjects.Count;
+            int startIndex = currentBuildIndex;
+            do
+            {
+                currentBuildIndex = (currentBuildIndex - 1 + buildableObjects.Count) % buildableObjects.Count;
+            }
+            while (!IsTrapUnlocked(currentBuildIndex) && currentBuildIndex != startIndex);
+
             CreatePreviewObject();
         }
     }
+
 
     void HandleObjectPreview()
     {
@@ -211,6 +231,12 @@ public class PlayerConstruction : MonoBehaviour
 
     void PlaceObject()
     {
+        if (!IsTrapUnlocked(currentBuildIndex))
+        {
+            Debug.Log("This trap is not yet unlocked based on horde count.");
+            return;
+        }
+
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
         TrapBase trapData = trapPrefab.GetComponent<TrapBase>();
         int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
@@ -282,4 +308,32 @@ public class PlayerConstruction : MonoBehaviour
             isInBuildingZone = false;
         }
     }
+
+    private bool IsTrapUnlocked(int index)
+    {
+        int currentHorde = HordeManager.Instance != null ? HordeManager.Instance.HordeCount : 0;
+
+        if (index == 0) return true; // First prefab always available
+        if (index == 1) return currentHorde >= 5;
+        if (index == 2) return currentHorde >= 10;
+
+        // Extend as needed for more prefabs
+        return false;
+    }
+
+    private void UpdateTrapIcons()
+    {
+        int hordeCount = HordeManager.Instance != null ? HordeManager.Instance.HordeCount : 0;
+
+        for (int i = 0; i < trapIcons.Count; i++)
+        {
+            bool unlocked = IsTrapUnlocked(i);
+
+            if (trapIcons[i] != null)
+            {
+                trapIcons[i].color = unlocked ? unlockedColor : lockedColor;
+            }
+        }
+    }
+
 }
