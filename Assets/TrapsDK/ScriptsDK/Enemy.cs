@@ -34,8 +34,18 @@ public class Enemy : MonoBehaviour, IEnemy
         goal = GameObject.Find("Goal").transform;
         baseScript = goal?.GetComponent<Base>();
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = baseSpeed * speedModifier;
+
+        float healthMultiplier = EnemyScaler.GetHealthMultiplier();
+        float damageMultiplier = EnemyScaler.GetDamageMultiplier();
+        float speedMultiplier = EnemyScaler.GetSpeedMultiplier();
+
+        health *= healthMultiplier;
+        damage *= damageMultiplier;
+        agent.speed = baseSpeed * speedModifier * speedMultiplier; // scaled speed
+
+        Debug.Log($"[Enemy Spawned] \nHorde: {EnemyScaler.HordeCount}\n HP: {health}\n DMG: {damage}\n Speed: {agent.speed}");
     }
+
 
     void Update()
     {

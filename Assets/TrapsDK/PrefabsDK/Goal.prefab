@@ -50,6 +50,7 @@ MonoBehaviour:
   health: 500
   damageCooldown: 1
   baseHealth: {fileID: 0}
+  gameOverManager: {fileID: 0}
 --- !u!135 &6195128259496583530
 SphereCollider:
   m_ObjectHideFlags: 0

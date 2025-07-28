@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [System.Serializable]
 public class SpawnEntry
@@ -17,27 +18,34 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Timing")]
     public float timeBetweenSpawns = 3f;
-    public float hordeInterval = 30f;
-    public int hordeSize = 10;
+    //public int hordeSize = 10;
     public float hordeSpawnDelay = 0.3f;
 
+    [Header("Horde Warning")]
+    public float hordeWarningTime = 3f; // Time between warning and actual spawn
+    public float postHordePause = 5f;   // Time to wait after a horde before normal spawns resume
+    public TextMeshProUGUI warningText; // Assign this in the inspector
+
     private float nextSpawnTime;
-    private float nextHordeTime;
+    private bool hordeInProgress = false;
+    private bool isPausedAfterHorde = false;
 
     void Start()
     {
         nextSpawnTime = Time.time + timeBetweenSpawns;
-        nextHordeTime = Time.time + hordeInterval;
+
+        if (warningText != null)
+            warningText.gameObject.SetActive(false);
+
+        HordeManager.Instance.OnHordeTriggered += () =>
+        {
+            StartCoroutine(HandleHordeWithWarning());
+        };
     }
 
     void Update()
     {
-        if (Time.time >= nextHordeTime)
-        {
-            StartCoroutine(SpawnHorde());
-            nextHordeTime = Time.time + hordeInterval;
-            return;
-        }
+        if (hordeInProgress || isPausedAfterHorde) return;
 
         if (Time.time >= nextSpawnTime)
         {
@@ -45,6 +53,7 @@ public class EnemySpawner : MonoBehaviour
             nextSpawnTime = Time.time + timeBetweenSpawns;
         }
     }
+
 
     private void SpawnSingleEnemy()
     {
@@ -54,9 +63,37 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log("Instantiated: " + prefab);
     }
 
+    private IEnumerator HandleHordeWithWarning()
+    {
+        hordeInProgress = true;
+
+        // Show warning text
+        if (warningText != null)
+        {
+            warningText.text = "A horde is incoming!";
+            warningText.gameObject.SetActive(true);
+        }
+
+        yield return new WaitForSeconds(hordeWarningTime);
+
+        // Hide warning
+        if (warningText != null)
+            warningText.gameObject.SetActive(false);
+
+        // Start spawning horde
+        yield return StartCoroutine(SpawnHorde());
+
+        // Pause normal spawns for a while
+        isPausedAfterHorde = true;
+        yield return new WaitForSeconds(postHordePause);
+        isPausedAfterHorde = false;
+
+        hordeInProgress = false;
+    }
+
     private IEnumerator SpawnHorde()
     {
-        for (int i = 0; i < hordeSize; i++)
+        for (int i = 0; i < Random.Range(8, 12); i++)
         {
             SpawnSingleEnemy();
             yield return new WaitForSeconds(hordeSpawnDelay);

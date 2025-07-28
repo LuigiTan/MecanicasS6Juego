@@ -19,7 +19,7 @@ public class TurretTrap : TrapBase
 
         if (currentTarget != null && currentTarget.IsAlive())
         {
-            if (Time.time - lastShot >= attackSpeed)
+            if (Time.time - lastShot >= attackCooldown)
             {
                 PerformAttack();
                 lastShot = Time.time;

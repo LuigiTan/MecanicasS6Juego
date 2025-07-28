@@ -68,13 +68,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  attackSpeed: 1
+  attackCooldown: 1
   activationRadius: 5
   cost: 150
   level: 1
   maxLevel: 3
   damageMultiplier: 1.5
-  attackSpeedMultiplier: 0.85
+  attackSpeedMultiplier: 0.75
   radiusMultiplier: 1.2
   rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
   upgradeText: {fileID: 0}
