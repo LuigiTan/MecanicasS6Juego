@@ -1,11 +1,14 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCombat : MonoBehaviour
 {
     [Header("Referencias")]
     public Camera playerCamera;
     public BaseWeapon[] weapons; // Debemos ponerlas en orden: 0=Melee, 1=Ranged, 2=AoE
+
+    public Image[] images; 
 
     private int currentWeaponIndex = 0;
     private MeleeWeapon meleeWeapon;
@@ -74,9 +77,27 @@ public class PlayerCombat : MonoBehaviour
         }
 
         currentWeaponIndex = index;
-        if (currentWeaponIndex == 0) currentWeaponText.text = "Current Weapon: Melee";
-        else if (currentWeaponIndex == 1) currentWeaponText.text = "Current Weapon: Range";
-        else if (currentWeaponIndex == 2) currentWeaponText.text = "Current Weapon: AoE";
+        if (currentWeaponIndex == 0) 
+        {
+            currentWeaponText.text = "2 - 3";
+            images[0].gameObject.SetActive(true);
+            images[1].gameObject.SetActive(false);
+            images[2].gameObject.SetActive(false);
+        }
+        else if (currentWeaponIndex == 1)
+        {
+            currentWeaponText.text = "1 - 3";
+            images[0].gameObject.SetActive(false);
+            images[1].gameObject.SetActive(true);
+            images[2].gameObject.SetActive(false);
+        }
+        else if (currentWeaponIndex == 2)
+        {
+            currentWeaponText.text = "1 - 2";
+            images[0].gameObject.SetActive(false);
+            images[1].gameObject.SetActive(false);
+            images[2].gameObject.SetActive(true);
+        }
 
         if (weapons[index].weaponType == WeaponType.Melee)
             meleeWeapon = weapons[index] as MeleeWeapon;
