@@ -331,7 +331,12 @@ public class PlayerConstruction : MonoBehaviour
 
             if (trapIcons[i] != null)
             {
-                trapIcons[i].color = unlocked ? unlockedColor : lockedColor;
+                if (unlocked)
+                {
+                    trapIcons[i].color = unlocked ? unlockedColor : lockedColor;
+                    trapIcons[i].transform.GetChild(0).gameObject.SetActive(false);
+                    trapIcons[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
             }
         }
     }

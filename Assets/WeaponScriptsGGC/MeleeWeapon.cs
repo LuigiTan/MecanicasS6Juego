@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MeleeWeapon : BaseWeapon
 {
@@ -8,7 +9,11 @@ public class MeleeWeapon : BaseWeapon
     public Transform attackOrigin;
     public LayerMask enemyMask;
 
-    [Header("Preparación")]
+    public Slider chargeBar;
+    public float fillSpeed = 0.5f;
+    public bool isCharging;
+
+    [Header("Preparaciï¿½n")]
     public Transform weaponModel;
     public Vector3 readyOffset = new Vector3(0f, -0.1f, -0.4f);
     public float animationSpeed = 5f;
@@ -21,22 +26,34 @@ public class MeleeWeapon : BaseWeapon
     {
         if (weaponModel != null)
             defaultPosition = weaponModel.localPosition;
+
+        chargeBar.value = 0f;
+        chargeBar.gameObject.SetActive(false);
+        isCharging = false;
     }
 
     void Update()
     {
         AnimatePreparation();
+
+        if (isCharging && chargeBar.value < chargeBar.maxValue)
+            chargeBar.value += fillSpeed * Time.deltaTime;
     }
 
     public void BeginPreparation()
     {
         isPreparing = true;
+        chargeBar.gameObject.SetActive(true);
+        isCharging = true;
     }
 
     public void CancelPreparation()
     {
         isPreparing = false;
         isReadyToAttack = false;
+        chargeBar.value = 0;
+        chargeBar.gameObject.SetActive(false);
+        isCharging = false;
     }
 
     public void ConfirmReady()
@@ -73,7 +90,7 @@ public class MeleeWeapon : BaseWeapon
         weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);
     }
 
-    // Visualización en escena
+    // Visualizaciï¿½n en escena
     private void OnDrawGizmosSelected()
     {
         if (attackOrigin == null) return;
