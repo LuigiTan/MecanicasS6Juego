@@ -16,6 +16,7 @@ public class MeleeWeapon : BaseWeapon
     [Header("Preparaci�n")]
     public Transform weaponModel;
     public Vector3 readyOffset = new Vector3(0f, -0.1f, -0.4f);
+    public Vector3 attackOffset = new Vector3(0f, -10f, 0f);
     public float animationSpeed = 5f;
 
     private Vector3 defaultPosition;
@@ -80,11 +81,15 @@ public class MeleeWeapon : BaseWeapon
         }
 
         Debug.Log("Ataque melee ejecutado. Enemigos golpeados: " + hits.Length);
+        Vector3 targetPos = defaultPosition + attackOffset;
+        weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);
     }
 
     private void AnimatePreparation()
     {
         if (weaponModel == null) return;
+
+        if (isReadyToAttack) return;
 
         Vector3 targetPos = isPreparing ? defaultPosition + readyOffset : defaultPosition;
         weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);

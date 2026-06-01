@@ -14,6 +14,9 @@ public class PlayerCombat : MonoBehaviour
     private MeleeWeapon meleeWeapon;
     public TextMeshProUGUI currentWeaponText;
 
+    public Color originalColor = Color.white;
+    public Color unusedColor = Color.gray;
+
     void Start()
     {
         SelectWeapon(0);
@@ -76,27 +79,63 @@ public class PlayerCombat : MonoBehaviour
             weapons[i].gameObject.SetActive(i == index);
         }
 
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            images[i].color = unusedColor;
+            images[i].gameObject.SetActive(false);
+        }
+
         currentWeaponIndex = index;
         if (currentWeaponIndex == 0) 
         {
-            currentWeaponText.text = "2 - 3";
+            currentWeaponText.text = "2       -       3";
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (images[i].IsActive()) images[i].gameObject.SetActive(false);
+                if (images[i].color == Color.white) images[i].color = unusedColor;
+            }
+
             images[0].gameObject.SetActive(true);
-            images[1].gameObject.SetActive(false);
-            images[2].gameObject.SetActive(false);
+            images[4].gameObject.SetActive(true);
+            images[5].gameObject.SetActive(true);
+
+            images[0].color = originalColor;
+            images[4].color = unusedColor;
+            images[5].color = unusedColor;
         }
         else if (currentWeaponIndex == 1)
         {
-            currentWeaponText.text = "1 - 3";
-            images[0].gameObject.SetActive(false);
+            currentWeaponText.text = "1       -       3";
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (images[i].IsActive()) images[i].gameObject.SetActive(false);
+                if (images[i].color == Color.white) images[i].color = unusedColor;
+            }
+
+            images[3].gameObject.SetActive(true);
             images[1].gameObject.SetActive(true);
-            images[2].gameObject.SetActive(false);
+            images[5].gameObject.SetActive(true);
+
+            images[3].color = unusedColor;
+            images[1].color = originalColor;
+            images[5].color = unusedColor;
         }
         else if (currentWeaponIndex == 2)
         {
-            currentWeaponText.text = "1 - 2";
-            images[0].gameObject.SetActive(false);
-            images[1].gameObject.SetActive(false);
+            currentWeaponText.text = "1       -       2";
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                if (images[i].IsActive()) images[i].gameObject.SetActive(false);
+                if (images[i].color == Color.white) images[i].color = unusedColor;
+            }
+
+            images[3].gameObject.SetActive(true);
+            images[6].gameObject.SetActive(true);
             images[2].gameObject.SetActive(true);
+
+            images[3].color = unusedColor;
+            images[6].color = unusedColor;
+            images[2].color = originalColor;
         }
 
         if (weapons[index].weaponType == WeaponType.Melee)
