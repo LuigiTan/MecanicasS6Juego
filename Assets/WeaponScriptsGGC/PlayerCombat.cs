@@ -77,12 +77,9 @@ public class PlayerCombat : MonoBehaviour
         for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].gameObject.SetActive(i == index);
-        }
-
-        for (int i = 0; i < weapons.Length; i++)
-        {
             images[i].color = unusedColor;
             images[i].gameObject.SetActive(false);
+            Debug.Log("WEAPON " + 1);
         }
 
         currentWeaponIndex = index;
@@ -93,6 +90,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 if (images[i].IsActive()) images[i].gameObject.SetActive(false);
                 if (images[i].color == Color.white) images[i].color = unusedColor;
+                Debug.Log("WEAPON " + 2);
             }
 
             images[0].gameObject.SetActive(true);
@@ -110,6 +108,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 if (images[i].IsActive()) images[i].gameObject.SetActive(false);
                 if (images[i].color == Color.white) images[i].color = unusedColor;
+                Debug.Log("WEAPON " + 3);
             }
 
             images[3].gameObject.SetActive(true);
