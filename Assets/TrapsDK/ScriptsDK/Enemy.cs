@@ -29,6 +29,9 @@ public class Enemy : MonoBehaviour, IEnemy
     public int moneyReward = 25;
     private bool isDead = false;
 
+    private float laneOffset;
+    public float laneWidth = 5f;
+
     private Base baseScript;
 
     void Start()
@@ -45,6 +48,10 @@ public class Enemy : MonoBehaviour, IEnemy
         health *= healthMultiplier;
         damage *= damageMultiplier;
         agent.speed = baseSpeed * speedModifier * speedMultiplier; // scaled speed
+        agent.stoppingDistance = 0.25f;
+
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.LowQualityObstacleAvoidance;
+        agent.avoidancePriority = Random.Range(0, 100);
 
         Debug.Log($"[Enemy Spawned] \nHorde: {EnemyScaler.HordeCount}\n HP: {health}\n DMG: {damage}\n Speed: {agent.speed}");
     }
@@ -54,7 +61,6 @@ public class Enemy : MonoBehaviour, IEnemy
     {
         if (isStunned)
         {
-            // Don�t let Update override isStopped state
             return;
         }
 
@@ -180,10 +186,12 @@ public class Enemy : MonoBehaviour, IEnemy
     }
 
     public void SetPath(EnemyPath path)
-    {
-        assignedPath = path;
-        currentWaypointIndex = 0;
-    }
+{
+    assignedPath = path;
+    currentWaypointIndex = 0;
+
+    laneOffset = Random.Range(-laneWidth, laneWidth);
+}
 
     private void FollowPath()
     {
@@ -212,15 +220,29 @@ public class Enemy : MonoBehaviour, IEnemy
             return;
         }
 
-        Transform targetWaypoint =
-            assignedPath.waypoints[currentWaypointIndex];
+        Transform targetWaypoint = assignedPath.waypoints[currentWaypointIndex];
 
-        agent.SetDestination(targetWaypoint.position);
+        Vector3 pathDirection;
 
-        if (Vector3.Distance(transform.position,
-                            targetWaypoint.position) <= 0.5f)
+        if (currentWaypointIndex < assignedPath.waypoints.Length - 1)
+        {
+            pathDirection = (assignedPath.waypoints[currentWaypointIndex + 1].position - targetWaypoint.position).normalized;
+        }
+        else
+        {
+            pathDirection = (goal.position - targetWaypoint.position).normalized;
+        }
+
+        Vector3 right = Vector3.Cross(Vector3.up, pathDirection).normalized;
+
+        Vector3 destination = targetWaypoint.position + right * laneOffset;
+
+        agent.SetDestination(destination);
+
+        if (!agent.pathPending  &&  agent.remainingDistance <= agent.stoppingDistance)
         {
             currentWaypointIndex++;
+            laneOffset = Random.Range(-laneWidth, laneWidth);
         }
     }
 
