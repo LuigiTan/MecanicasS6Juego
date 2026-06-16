@@ -14,6 +14,9 @@ public class Enemy : MonoBehaviour, IEnemy
     public float baseSpeed = 3.5f;
     public float speedModifier = 1.0f; // Multiplier
 
+    private EnemyPath assignedPath;
+    private int currentWaypointIndex = 0;
+
     private Transform player;
     private TrapBase currentTargetTrap;
     private Transform goal;
@@ -51,7 +54,7 @@ public class Enemy : MonoBehaviour, IEnemy
     {
         if (isStunned)
         {
-            // Don’t let Update override isStopped state
+            // Donï¿½t let Update override isStopped state
             return;
         }
 
@@ -70,9 +73,11 @@ public class Enemy : MonoBehaviour, IEnemy
         else
         {
             TrapBase[] traps = FindObjectsOfType<TrapBase>();
+
             foreach (var trap in traps)
             {
                 float d = Vector3.Distance(transform.position, trap.transform.position);
+
                 if (d < detectionRadius)
                 {
                     currentTargetTrap = trap;
@@ -80,7 +85,7 @@ public class Enemy : MonoBehaviour, IEnemy
                 }
             }
 
-            agent.SetDestination(goal.position);
+            FollowPath();
         }
 
         if (goal != null && Vector3.Distance(transform.position, goal.position) < attackRange)
@@ -174,8 +179,50 @@ public class Enemy : MonoBehaviour, IEnemy
         agent.isStopped = false;
     }
 
+    public void SetPath(EnemyPath path)
+    {
+        assignedPath = path;
+        currentWaypointIndex = 0;
+    }
 
+    private void FollowPath()
+    {
+        if (assignedPath == null)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
 
+            return;
+        }
+
+        if (assignedPath.waypoints == null ||
+            assignedPath.waypoints.Length == 0)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
+
+            return;
+        }
+
+        if (currentWaypointIndex >= assignedPath.waypoints.Length)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
+
+            return;
+        }
+
+        Transform targetWaypoint =
+            assignedPath.waypoints[currentWaypointIndex];
+
+        agent.SetDestination(targetWaypoint.position);
+
+        if (Vector3.Distance(transform.position,
+                            targetWaypoint.position) <= 0.5f)
+        {
+            currentWaypointIndex++;
+        }
+    }
 
     public bool IsAlive() => health > 0;
     public Transform GetTransform() => transform;

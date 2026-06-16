@@ -16,6 +16,9 @@ public class EnemySpawner : MonoBehaviour
     public Transform spawnPoint;
     public List<SpawnEntry> enemyVariants;
 
+    [Header("Path")]
+    public EnemyPath assignedPath;
+
     [Header("Timing")]
     public float timeBetweenSpawns = 3f;
     //public int hordeSize = 10;
@@ -56,12 +59,24 @@ public class EnemySpawner : MonoBehaviour
 
 
     private void SpawnSingleEnemy()
+{
+    GameObject prefab = GetRandomEnemy();
+
+    if (prefab == null)
+        return;
+
+    GameObject enemyObj =
+        Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+
+    Enemy enemy = enemyObj.GetComponent<Enemy>();
+
+    if (enemy != null)
     {
-        GameObject prefab = GetRandomEnemy();
-        if (prefab != null)
-            Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
-        Debug.Log("Instantiated: " + prefab);
+        enemy.SetPath(assignedPath);
     }
+
+    Debug.Log("Instantiated: " + prefab.name);
+}
 
     private IEnumerator HandleHordeWithWarning()
     {
