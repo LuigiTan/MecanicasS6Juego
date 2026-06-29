@@ -22,7 +22,7 @@ public class PlayerConstruction : MonoBehaviour
 
     private GameObject previewObject;
     private Renderer[] previewRenderers;
-    private bool isInConstructionMode = false;
+    private bool isInConstructionMode = true;
     private bool canPlaceObject = false;
     private bool isInBuildingZone = false;
     private int currentBuildIndex = 0;
@@ -46,11 +46,16 @@ public class PlayerConstruction : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Optional safety: default trap limit per type
         while (trapLimits.Count < buildableObjects.Count)
         {
             trapLimits.Add(maxBuildCount);
         }
+
+        isInConstructionMode = true;
+        CreatePreviewObject();
+
+        WavePhaseManager.Instance.OnBuildPhaseStarted += EnterBuildPhase;
+        WavePhaseManager.Instance.OnCombatPhaseStarted += ExitBuildPhase;
     }
 
 
@@ -75,23 +80,40 @@ public class PlayerConstruction : MonoBehaviour
 
     // ---------------------- CONSTRUCTION MODE ----------------------
     void HandleConstructionModeToggle()
+{
+    if (Input.GetKeyDown(KeyCode.Q))
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (WavePhaseManager.Instance.IsBuildPhase)
         {
-            isInConstructionMode = !isInConstructionMode;
-
-            //Cursor.lockState = isInConstructionMode ? CursorLockMode.None : CursorLockMode.Locked;
-
-            if (isInConstructionMode)
-            {
-                CreatePreviewObject();
-            }
-            else
-            {
-                Destroy(previewObject);
-            }
+            WavePhaseManager.Instance.StartCombatPhase();
         }
     }
+}
+
+private void EnterBuildPhase()
+{
+    isInConstructionMode = true;
+
+    if (previewObject == null)
+    {
+        CreatePreviewObject();
+        upgradeText.gameObject.SetActive(true);
+        upgradeLevelText.gameObject.SetActive(true);
+    }
+}
+
+private void ExitBuildPhase()
+{
+    isInConstructionMode = false;
+
+    if (previewObject != null)
+    {
+        Destroy(previewObject);
+        previewObject = null;
+        upgradeText.gameObject.SetActive(false);
+        upgradeLevelText.gameObject.SetActive(false);
+    }
+}
 
     void CreatePreviewObject()
     {

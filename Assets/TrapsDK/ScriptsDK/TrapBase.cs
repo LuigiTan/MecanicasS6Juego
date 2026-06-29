@@ -41,30 +41,35 @@ public abstract class TrapBase : MonoBehaviour
 
         if (rangeIndicatorPrefab)
         {
-            GameObject rangeObj = Instantiate(rangeIndicatorPrefab, transform);
             rangeIndicatorInstance = Instantiate(rangeIndicatorPrefab, transform);
-            rangeIndicatorInstance.transform.localPosition = Vector3.zero; // center on trap
-            UpdateRangeIndicatorScale(); // Apply scale based on current activationRadius
+            rangeIndicatorInstance.transform.localPosition = Vector3.zero;
+            UpdateRangeIndicatorScale();
 
             // Scale correctly to match the activationRadius
             float diameter = activationRadius * 2f;
 
-            // Normalize to prefab’s original size
-            Renderer renderer = rangeObj.GetComponentInChildren<Renderer>();
+            // Normalize to prefabï¿½s original size
+            Renderer renderer = rangeIndicatorInstance.GetComponentInChildren<Renderer>();
             if (renderer != null)
             {
                 float originalSize = Mathf.Max(renderer.bounds.size.x, renderer.bounds.size.z);
                 float scaleFactor = diameter / originalSize;
-                rangeObj.transform.localScale = new Vector3(scaleFactor, 1f, scaleFactor);
+                rangeIndicatorInstance.transform.localScale = new Vector3(scaleFactor, 1f, scaleFactor);
             }
             else
             {
                 // Fallback if no renderer, scale uniformly
-                rangeObj.transform.localScale = Vector3.one * diameter;
+                rangeIndicatorInstance.transform.localScale = Vector3.one * diameter;
             }
         }
 
-        constructionManager = FindObjectOfType<PlayerConstruction>();
+        if (WavePhaseManager.Instance != null)
+        {
+            WavePhaseManager.Instance.OnBuildPhaseStarted += ShowRangeIndicator;
+            WavePhaseManager.Instance.OnCombatPhaseStarted += HideRangeIndicator;
+        }
+        
+        ShowRangeIndicator();
     }
 
     protected virtual void Update()
@@ -166,6 +171,31 @@ public abstract class TrapBase : MonoBehaviour
             playerNearby = false;
             if (upgradeText != null) upgradeText.text = "";
             if (upgradeLevelText != null) upgradeLevelText.text = "";
+        }
+    }
+
+    private void ShowRangeIndicator()
+    {
+        if (rangeIndicatorInstance != null)
+        {
+            rangeIndicatorInstance.SetActive(true);
+        }
+    }
+
+    private void HideRangeIndicator()
+    {
+        if (rangeIndicatorInstance != null)
+        {
+            rangeIndicatorInstance.SetActive(false);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (WavePhaseManager.Instance != null)
+        {
+            WavePhaseManager.Instance.OnBuildPhaseStarted -= ShowRangeIndicator;
+            WavePhaseManager.Instance.OnCombatPhaseStarted -= HideRangeIndicator;
         }
     }
 }

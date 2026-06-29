@@ -152,6 +152,7 @@ public class Enemy : MonoBehaviour, IEnemy
 
         isDead = true;
         PlayerStats.Instance?.AddMoney(moneyReward);
+        EnemyTracker.Instance.UnregisterEnemy();
         Destroy(gameObject);
     }
 

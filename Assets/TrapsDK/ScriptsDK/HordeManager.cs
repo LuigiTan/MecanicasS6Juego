@@ -15,6 +15,8 @@ public class HordeManager : MonoBehaviour
 
     public TextMeshProUGUI waveCount;
 
+    private bool combatActive;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -28,16 +30,30 @@ public class HordeManager : MonoBehaviour
     void Start()
     {
         nextHordeTime = Time.time + hordeInterval;
+
+        WavePhaseManager.Instance.OnCombatPhaseStarted += () =>
+        {
+            combatActive = true;
+            nextHordeTime = Time.time + hordeInterval;
+        };
+
+        WavePhaseManager.Instance.OnBuildPhaseStarted += () =>
+        {
+            combatActive = false;
+        };
     }
 
     void Update()
+{
+    if (!combatActive)
+        return;
+
+    if (Time.time >= nextHordeTime)
     {
-        if (Time.time >= nextHordeTime)
-        {
-            TriggerHorde();
-            nextHordeTime = Time.time + hordeInterval;
-        }
+        TriggerHorde();
+        combatActive = false;
     }
+}
 
     private void TriggerHorde()
     {

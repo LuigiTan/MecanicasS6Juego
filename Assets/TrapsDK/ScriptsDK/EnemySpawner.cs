@@ -33,6 +33,8 @@ public class EnemySpawner : MonoBehaviour
     private bool hordeInProgress = false;
     private bool isPausedAfterHorde = false;
 
+    private bool combatActive = false;
+
     void Start()
     {
         nextSpawnTime = Time.time + timeBetweenSpawns;
@@ -44,10 +46,22 @@ public class EnemySpawner : MonoBehaviour
         {
             StartCoroutine(HandleHordeWithWarning());
         };
+
+        WavePhaseManager.Instance.OnCombatPhaseStarted += () =>
+        {
+            combatActive = true;
+        };
+
+        WavePhaseManager.Instance.OnBuildPhaseStarted += () =>
+        {
+            combatActive = false;
+        };
     }
 
     void Update()
     {
+        if (!combatActive) return;
+
         if (hordeInProgress || isPausedAfterHorde) return;
 
         if (Time.time >= nextSpawnTime)
@@ -65,8 +79,9 @@ public class EnemySpawner : MonoBehaviour
     if (prefab == null)
         return;
 
-    GameObject enemyObj =
-        Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+    GameObject enemyObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+
+    EnemyTracker.Instance.RegisterEnemy();
 
     Enemy enemy = enemyObj.GetComponent<Enemy>();
 
@@ -98,12 +113,10 @@ public class EnemySpawner : MonoBehaviour
         // Start spawning horde
         yield return StartCoroutine(SpawnHorde());
 
-        // Pause normal spawns for a while
-        isPausedAfterHorde = true;
-        yield return new WaitForSeconds(postHordePause);
-        isPausedAfterHorde = false;
-
+        // Horde finished spawning.
+        // Don't resume normal spawning.
         hordeInProgress = false;
+        combatActive = false;
     }
 
     private IEnumerator SpawnHorde()
