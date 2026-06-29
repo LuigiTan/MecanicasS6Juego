@@ -30,8 +30,20 @@ public abstract class TrapBase : MonoBehaviour
 
     private PlayerConstruction constructionManager;
 
+    [Header("Upgrade Visuals")]
+    public float scalePerLevel = 0.15f;
+
+    public Color level1Color = Color.white;
+    public Color level2Color = Color.yellow;
+    public Color level3Color = Color.red;
+
+    private Vector3 originalScale;
+
     protected virtual void Start()
     {
+        originalScale = transform.localScale;
+        ApplyUpgradeVisuals();
+
         sphereCollider = GetComponent<SphereCollider>();
         sphereCollider.isTrigger = true;
         sphereCollider.radius = activationRadius;
@@ -43,6 +55,7 @@ public abstract class TrapBase : MonoBehaviour
         {
             rangeIndicatorInstance = Instantiate(rangeIndicatorPrefab, transform);
             rangeIndicatorInstance.transform.localPosition = Vector3.zero;
+            rangeIndicatorInstance.transform.localRotation = Quaternion.identity;
             UpdateRangeIndicatorScale();
 
             // Scale correctly to match the activationRadius
@@ -67,8 +80,19 @@ public abstract class TrapBase : MonoBehaviour
         {
             WavePhaseManager.Instance.OnBuildPhaseStarted += ShowRangeIndicator;
             WavePhaseManager.Instance.OnCombatPhaseStarted += HideRangeIndicator;
+
+            // Match the current game phase immediately.
+            if (WavePhaseManager.Instance.IsBuildPhase)
+                ShowRangeIndicator();
+            else
+                HideRangeIndicator();
         }
-        
+        else
+        {
+            // Fallback if no manager exists.
+            ShowRangeIndicator();
+        }
+
         ShowRangeIndicator();
     }
 
@@ -136,16 +160,20 @@ public abstract class TrapBase : MonoBehaviour
         attackCooldown *= attackSpeedMultiplier;
         activationRadius *= radiusMultiplier;
         sphereCollider.radius = activationRadius;
+
         UpdateRangeIndicatorScale();
+
+        ApplyUpgradeVisuals();
     }
 
     private void UpdateRangeIndicatorScale()
     {
-        if (rangeIndicatorInstance == null) return;
+        if (rangeIndicatorInstance == null)
+            return;
+
         float diameter = activationRadius * 2f;
 
-        // Scale uniformly assuming prefab represents diameter = 1 unit
-        rangeIndicatorInstance.transform.localScale = Vector3.one * diameter;
+        rangeIndicatorInstance.transform.localScale = new Vector3(diameter, 1f, diameter);
     }
 
     protected abstract void OnEnemyEnter(Collider other);
@@ -176,10 +204,11 @@ public abstract class TrapBase : MonoBehaviour
 
     private void ShowRangeIndicator()
     {
-        if (rangeIndicatorInstance != null)
-        {
-            rangeIndicatorInstance.SetActive(true);
-        }
+        if (rangeIndicatorInstance == null)
+            return;
+
+        UpdateRangeIndicatorScale();
+        rangeIndicatorInstance.SetActive(true);
     }
 
     private void HideRangeIndicator()
@@ -196,6 +225,43 @@ public abstract class TrapBase : MonoBehaviour
         {
             WavePhaseManager.Instance.OnBuildPhaseStarted -= ShowRangeIndicator;
             WavePhaseManager.Instance.OnCombatPhaseStarted -= HideRangeIndicator;
+        }
+    }
+
+    private void ApplyUpgradeVisuals()
+    {
+        // Scale
+        float scaleMultiplier = 1f + ((level - 1) * scalePerLevel);
+        transform.localScale = originalScale * scaleMultiplier;
+
+        // Color
+        Color targetColor = level1Color;
+
+        switch (level)
+        {
+            case 2:
+                targetColor = level2Color;
+                break;
+
+            case 3:
+                targetColor = level3Color;
+                break;
+        }
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer r in renderers)
+        {
+            // Skip the range indicator
+            if (rangeIndicatorInstance != null &&
+                r.transform.IsChildOf(rangeIndicatorInstance.transform))
+                continue;
+
+            foreach (Material mat in r.materials)
+            {
+                if (mat.HasProperty("_Color"))
+                    mat.color = targetColor;
+            }
         }
     }
 }

@@ -18,8 +18,8 @@ TagManager:
   - Ground
   - shootableLayer
   - Enemy
-  - 
-  - 
+  - NoPlayer
+  - Bullet
   - 
   - 
   - 

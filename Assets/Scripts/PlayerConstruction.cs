@@ -41,6 +41,8 @@ public class PlayerConstruction : MonoBehaviour
     public Color unlockedColor = Color.white;
     public Color lockedColor = new Color(0.5f, 0.5f, 0.5f, 1f);
 
+    public List<GameObject> buildingZones;
+
 
     void Start()
     {
@@ -90,30 +92,34 @@ public class PlayerConstruction : MonoBehaviour
     }
 }
 
-private void EnterBuildPhase()
-{
-    isInConstructionMode = true;
-
-    if (previewObject == null)
+    private void EnterBuildPhase()
     {
-        CreatePreviewObject();
+        isInConstructionMode = true;
+
+        if (previewObject == null)
+            CreatePreviewObject();
+
         upgradeText.gameObject.SetActive(true);
         upgradeLevelText.gameObject.SetActive(true);
+
+        SetBuildingZonesVisible(true);
     }
-}
 
-private void ExitBuildPhase()
-{
-    isInConstructionMode = false;
-
-    if (previewObject != null)
+    private void ExitBuildPhase()
     {
-        Destroy(previewObject);
-        previewObject = null;
+        isInConstructionMode = false;
+
+        if (previewObject != null)
+        {
+            Destroy(previewObject);
+            previewObject = null;
+        }
+
         upgradeText.gameObject.SetActive(false);
         upgradeLevelText.gameObject.SetActive(false);
+
+        SetBuildingZonesVisible(false);
     }
-}
 
     void CreatePreviewObject()
     {
@@ -363,4 +369,12 @@ private void ExitBuildPhase()
         }
     }
 
+    private void SetBuildingZonesVisible(bool visible)
+    {
+        foreach (GameObject zone in buildingZones)
+        {
+            if (zone != null)
+                zone.SetActive(visible);
+        }
+    }
 }
