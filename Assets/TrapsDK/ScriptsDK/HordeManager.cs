@@ -10,6 +10,8 @@ public class HordeManager : MonoBehaviour
 
     public event Action OnHordeTriggered;
 
+    public event Action<int> OnWaveStarted;
+
     private float nextHordeTime;
     public float hordeInterval = 30f;
 
@@ -59,7 +61,7 @@ public class HordeManager : MonoBehaviour
     {
         HordeCount++;
         waveCount.text = "Wave: " + HordeCount;
-        Debug.Log($"[HordeManager] Triggering Horde #{HordeCount}");
+        OnWaveStarted?.Invoke(HordeCount);
         OnHordeTriggered?.Invoke();
     }
 

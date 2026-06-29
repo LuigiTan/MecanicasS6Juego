@@ -32,9 +32,7 @@ public class PlayerConstruction : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI upgradeText;
     [SerializeField] private TextMeshProUGUI upgradeLevelText;
-
-    // Optional: limits per trap type (match buildableObjects index)
-    public List<int> trapLimits = new List<int>();
+    [SerializeField] private TextMeshProUGUI TrapCountText;
 
     [Header("Trap UI Icons")]
     public List<Image> trapIcons;
@@ -43,21 +41,24 @@ public class PlayerConstruction : MonoBehaviour
 
     public List<GameObject> buildingZones;
 
+    [Header("Build Count Progression")]
+    public int buildIncreaseEvery = 5;
+    public int buildIncreaseAmount = 2;
+
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
-        while (trapLimits.Count < buildableObjects.Count)
-        {
-            trapLimits.Add(maxBuildCount);
-        }
 
         isInConstructionMode = true;
         CreatePreviewObject();
 
         WavePhaseManager.Instance.OnBuildPhaseStarted += EnterBuildPhase;
         WavePhaseManager.Instance.OnCombatPhaseStarted += ExitBuildPhase;
+
+        HordeManager.Instance.OnWaveStarted += HandleWaveStarted;
+
+        UpdateTrapCountUI();
     }
 
 
@@ -222,11 +223,9 @@ public class PlayerConstruction : MonoBehaviour
 
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
         TrapBase trap = trapPrefab.GetComponent<TrapBase>();
-        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
-        int currentCount = trapCounts.ContainsKey(trapPrefab) ? trapCounts[trapPrefab] : 0;
         bool hasMoney = PlayerStats.Instance.money >= trap.cost;
 
-        canPlaceObject = (colliders.Length == 0 && isInBuildingZone && hasMoney && currentCount < trapLimit);
+        canPlaceObject = (colliders.Length == 0 && isInBuildingZone && hasMoney && buildCount < maxBuildCount);
 
         foreach (Renderer renderer in previewRenderers)
         {
@@ -245,14 +244,19 @@ public class PlayerConstruction : MonoBehaviour
     {
         if (previewObject != null)
         {
-            Bounds bounds = new Bounds(previewObject.transform.position, Vector3.zero);
-            foreach (Renderer r in previewObject.GetComponentsInChildren<Renderer>())
-            {
-                bounds.Encapsulate(r.bounds);
-            }
+            BoxCollider placement = previewObject.GetComponentInChildren<BoxCollider>();
+
+            Vector3 center = placement.bounds.center;
+            Vector3 extents = placement.bounds.extents;
+
+            Collider[] colliders = Physics.OverlapBox(
+                center,
+                extents,
+                placement.transform.rotation,
+                obstructionLayer);
 
             Gizmos.color = canPlaceObject ? Color.green : Color.red;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            Gizmos.DrawWireCube(placement.center, placement.size);
         }
     }
 
@@ -267,22 +271,10 @@ public class PlayerConstruction : MonoBehaviour
 
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
         TrapBase trapData = trapPrefab.GetComponent<TrapBase>();
-        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
-
-        if (!trapCounts.ContainsKey(trapPrefab))
-            trapCounts[trapPrefab] = 0;
-
-        int currentCount = trapCounts[trapPrefab];
 
         if (trapData == null)
         {
             Debug.LogWarning("Trap prefab is missing TrapBase component.");
-            return;
-        }
-
-        if (currentCount >= trapLimit)
-        {
-            Debug.Log("Trap limit reached for this type.");
             return;
         }
 
@@ -300,24 +292,15 @@ public class PlayerConstruction : MonoBehaviour
         placedTrap.upgradeText = upgradeText;
         placedTrap.upgradeLevelText = upgradeLevelText;
 
-
-        trapCounts[trapPrefab]++;
         buildCount++;
 
+        UpdateTrapCountUI();
     }
 
     public void OnTrapDestroyed(TrapBase trap)
     {
-        foreach (GameObject prefab in trapCounts.Keys)
-        {
-            TrapBase test = prefab.GetComponent<TrapBase>();
-            if (test != null && test.GetType() == trap.GetType())
-            {
-                trapCounts[prefab] = Mathf.Max(0, trapCounts[prefab] - 1);
-                buildCount = Mathf.Max(0, buildCount - 1);
-                return;
-            }
-        }
+        buildCount = Mathf.Max(0, buildCount - 1);
+        UpdateTrapCountUI();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -375,6 +358,32 @@ public class PlayerConstruction : MonoBehaviour
         {
             if (zone != null)
                 zone.SetActive(visible);
+        }
+    }
+
+    private void HandleWaveStarted(int wave)
+    {
+        if (wave % buildIncreaseEvery == 0)
+        {
+            maxBuildCount += buildIncreaseAmount;
+
+            UpdateTrapCountUI();
+
+            Debug.Log($"New build limit: {maxBuildCount}");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (HordeManager.Instance != null)
+            HordeManager.Instance.OnWaveStarted -= HandleWaveStarted;
+    }
+
+    private void UpdateTrapCountUI()
+    {
+        if (TrapCountText != null)
+        {
+            TrapCountText.text = $"Turrets: {buildCount} / {maxBuildCount}";
         }
     }
 }

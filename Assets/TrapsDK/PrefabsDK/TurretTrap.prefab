@@ -140,7 +140,7 @@ Transform:
   m_GameObject: {fileID: 103151155064612542}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.109, z: 0}
+  m_LocalPosition: {x: 0, y: 1.064, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 477324228823346314}
   - component: {fileID: 5565701185276711843}
   - component: {fileID: 2511401277083034954}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 6260162549527109746}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.19479966, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1497997, z: 0}
   m_LocalScale: {x: 2, y: 0.25, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -564,6 +564,10 @@ MonoBehaviour:
   rangeIndicatorPrefab: {fileID: 6862278424346318970, guid: 4d9d25362ab6e19499041bda58cfd97a, type: 3}
   upgradeText: {fileID: 0}
   upgradeLevelText: {fileID: 0}
+  scalePerLevel: 0.15
+  level1Color: {r: 1, g: 1, b: 1, a: 1}
+  level2Color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  level3Color: {r: 1, g: 0, b: 0, a: 1}
   projectilePrefab: {fileID: 5347324358584888435, guid: 311e33fb852ec8c4394e1770289b02c3, type: 3}
   firePoint: {fileID: 4737117913225800968}
   projectileSpeed: 10
