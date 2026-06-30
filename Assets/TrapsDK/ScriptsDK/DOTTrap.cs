@@ -10,6 +10,15 @@ public class DOTTrap : TrapBase
     private HashSet<IEnemy> enemies = new HashSet<IEnemy>();
     private float lastTick;
 
+    private ParticleSystem DOTParticles;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        DOTParticles = GetComponentInChildren<ParticleSystem>();
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -22,6 +31,9 @@ public class DOTTrap : TrapBase
 
     protected override void PerformAttack()
     {
+        if (!DOTParticles.isPlaying)
+        DOTParticles.Play();
+
         foreach (var enemy in enemies)
         {
             if (enemy != null && enemy.IsAlive())
