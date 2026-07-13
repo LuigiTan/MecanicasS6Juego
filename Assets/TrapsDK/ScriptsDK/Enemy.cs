@@ -59,6 +59,18 @@ public class Enemy : MonoBehaviour, IEnemy
 
     void Update()
     {
+        if (CompareTag("Preview"))
+        {
+            FollowPath();
+
+            if (goal != null && Vector3.Distance(transform.position, goal.position) < attackRange)
+            {
+                Destroy(gameObject);
+            }
+
+            return;
+        }
+
         if (isStunned)
         {
             return;
@@ -151,8 +163,12 @@ public class Enemy : MonoBehaviour, IEnemy
         if (isDead) return;
 
         isDead = true;
+
         PlayerStats.Instance?.AddMoney(moneyReward);
-        EnemyTracker.Instance.UnregisterEnemy();
+
+        if (!CompareTag("Preview"))
+            EnemyTracker.Instance.UnregisterEnemy();
+
         Destroy(gameObject);
     }
 

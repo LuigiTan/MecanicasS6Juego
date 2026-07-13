@@ -16,6 +16,9 @@ public class EnemySpawner : MonoBehaviour
     public Transform spawnPoint;
     public List<SpawnEntry> enemyVariants;
 
+    [Header("Preview Enemies")]
+    public List<SpawnEntry> previewEnemyVariants;
+
     [Header("Path")]
     public EnemyPath assignedPath;
 
@@ -35,6 +38,13 @@ public class EnemySpawner : MonoBehaviour
 
     private bool combatActive = false;
 
+    [Header("Preview Settings")]
+    public float previewLifetime = 8f;
+    public int maxPreviewEnemies = 5;
+
+    private readonly List<GameObject> previewEnemies = new();
+    public Material previewMAT;
+
     void Start()
     {
         nextSpawnTime = Time.time + timeBetweenSpawns;
@@ -50,6 +60,7 @@ public class EnemySpawner : MonoBehaviour
         WavePhaseManager.Instance.OnCombatPhaseStarted += () =>
         {
             combatActive = true;
+            ClearPreviewEnemies();
         };
 
         WavePhaseManager.Instance.OnBuildPhaseStarted += () =>
@@ -60,38 +71,92 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
-        if (!combatActive) return;
-
-        if (hordeInProgress || isPausedAfterHorde) return;
-
-        if (Time.time >= nextSpawnTime)
+        if (combatActive)
         {
-            SpawnSingleEnemy();
-            nextSpawnTime = Time.time + timeBetweenSpawns;
+            if (hordeInProgress || isPausedAfterHorde)
+                return;
+
+            if (Time.time >= nextSpawnTime)
+            {
+                SpawnSingleEnemy(enemyVariants);
+                nextSpawnTime = Time.time + timeBetweenSpawns;
+            }
+        }
+        else if (WavePhaseManager.Instance.IsBuildPhase)
+        {
+            if (Time.time >= nextSpawnTime)
+            {
+                SpawnSingleEnemy(previewEnemyVariants, true);
+                nextSpawnTime = Time.time + timeBetweenSpawns;
+            }
         }
     }
 
 
-    private void SpawnSingleEnemy()
-{
-    GameObject prefab = GetRandomEnemy();
-
-    if (prefab == null)
-        return;
-
-    GameObject enemyObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
-
-    EnemyTracker.Instance.RegisterEnemy();
-
-    Enemy enemy = enemyObj.GetComponent<Enemy>();
-
-    if (enemy != null)
+    private void SpawnSingleEnemy(List<SpawnEntry> list, bool isPreview = false)
     {
-        enemy.SetPath(assignedPath);
+        GameObject prefab = GetRandomEnemy(list);
+
+        if (prefab == null)
+            return;
+
+        GameObject enemyObj = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+
+        Enemy enemy = enemyObj.GetComponent<Enemy>();
+
+        if (enemy != null)
+            enemy.SetPath(assignedPath);
+
+        if (isPreview)
+        {
+            enemyObj.tag = "Preview";
+            ApplyPreviewMaterial(enemyObj);
+
+            previewEnemies.Add(enemyObj);
+
+            Destroy(enemyObj, previewLifetime);
+            StartCoroutine(RemovePreviewReference(enemyObj));
+
+            if (previewEnemies.Count > maxPreviewEnemies)
+            {
+                Destroy(previewEnemies[0]);
+                previewEnemies.RemoveAt(0);
+            }
+        }
+        else
+        {
+            EnemyTracker.Instance.RegisterEnemy();
+        }
     }
 
-    Debug.Log("Instantiated: " + prefab.name);
-}
+    private void ApplyPreviewMaterial(GameObject enemy)
+    {
+        Renderer[] renderers = enemy.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.material = previewMAT;
+        }
+    }
+
+    private IEnumerator RemovePreviewReference(GameObject enemy)
+    {
+        yield return new WaitForSeconds(previewLifetime);
+
+        if (previewEnemies.Contains(enemy))
+            previewEnemies.Remove(enemy);
+    }
+
+    private void ClearPreviewEnemies()
+    {
+        foreach (GameObject enemy in previewEnemies)
+        {
+            if (enemy != null)
+                Destroy(enemy);
+        }
+
+        previewEnemies.Clear();
+    }
 
     private IEnumerator HandleHordeWithWarning()
     {
@@ -123,29 +188,33 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = 0; i < Random.Range(8, 12); i++)
         {
-            SpawnSingleEnemy();
+            SpawnSingleEnemy(enemyVariants);
             yield return new WaitForSeconds(hordeSpawnDelay);
         }
     }
 
-    private GameObject GetRandomEnemy()
+    private GameObject GetRandomEnemy(List<SpawnEntry> list)
     {
-        if (enemyVariants.Count == 0) return null;
+        if (list.Count == 0)
+            return null;
 
         int totalWeight = 0;
-        foreach (var entry in enemyVariants)
+
+        foreach (var entry in list)
             totalWeight += entry.weight;
 
-        int randomValue = Random.Range(0, totalWeight);
+        int random = Random.Range(0, totalWeight);
+
         int cumulative = 0;
 
-        foreach (var entry in enemyVariants)
+        foreach (var entry in list)
         {
             cumulative += entry.weight;
-            if (randomValue < cumulative)
+
+            if (random < cumulative)
                 return entry.enemyPrefab;
         }
 
-        return enemyVariants[enemyVariants.Count - 1].enemyPrefab; // fallback
+        return list[list.Count - 1].enemyPrefab;
     }
 }
