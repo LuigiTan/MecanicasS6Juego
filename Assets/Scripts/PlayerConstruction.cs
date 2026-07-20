@@ -22,7 +22,7 @@ public class PlayerConstruction : MonoBehaviour
 
     private GameObject previewObject;
     private Renderer[] previewRenderers;
-    private bool isInConstructionMode = false;
+    private bool isInConstructionMode = true;
     private bool canPlaceObject = false;
     private bool isInBuildingZone = false;
     private int currentBuildIndex = 0;
@@ -30,27 +30,43 @@ public class PlayerConstruction : MonoBehaviour
 
     private Dictionary<GameObject, int> trapCounts = new Dictionary<GameObject, int>();
 
+    [Header("UI Text")]
     [SerializeField] private TextMeshProUGUI upgradeText;
     [SerializeField] private TextMeshProUGUI upgradeLevelText;
+    [SerializeField] private TextMeshProUGUI TrapCountText;
+    [SerializeField] private Image upgradeTextBG;
+    [SerializeField] private Image upgradeLevelTextBG;
 
-    // Optional: limits per trap type (match buildableObjects index)
-    public List<int> trapLimits = new List<int>();
+    [SerializeField] private TextMeshProUGUI buildingPhaseText;
+    [SerializeField] private TextMeshProUGUI StartWaveText;
+    [SerializeField] private Image buildingPhaseBG;
+    [SerializeField] private Image StartWaveBG;
 
     [Header("Trap UI Icons")]
     public List<Image> trapIcons;
     public Color unlockedColor = Color.white;
     public Color lockedColor = new Color(0.5f, 0.5f, 0.5f, 1f);
 
+    public List<GameObject> buildingZones;
+
+    [Header("Build Count Progression")]
+    public int buildIncreaseEvery = 5;
+    public int buildIncreaseAmount = 2;
+
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Optional safety: default trap limit per type
-        while (trapLimits.Count < buildableObjects.Count)
-        {
-            trapLimits.Add(maxBuildCount);
-        }
+        isInConstructionMode = true;
+        CreatePreviewObject();
+
+        WavePhaseManager.Instance.OnBuildPhaseStarted += EnterBuildPhase;
+        WavePhaseManager.Instance.OnCombatPhaseStarted += ExitBuildPhase;
+
+        HordeManager.Instance.OnWaveStarted += HandleWaveStarted;
+
+        UpdateTrapCountUI();
     }
 
 
@@ -75,22 +91,57 @@ public class PlayerConstruction : MonoBehaviour
 
     // ---------------------- CONSTRUCTION MODE ----------------------
     void HandleConstructionModeToggle()
+{
+    if (Input.GetKeyDown(KeyCode.Q))
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (WavePhaseManager.Instance.IsBuildPhase)
         {
-            isInConstructionMode = !isInConstructionMode;
-
-            //Cursor.lockState = isInConstructionMode ? CursorLockMode.None : CursorLockMode.Locked;
-
-            if (isInConstructionMode)
-            {
-                CreatePreviewObject();
-            }
-            else
-            {
-                Destroy(previewObject);
-            }
+            WavePhaseManager.Instance.StartCombatPhase();
         }
+    }
+}
+
+    private void EnterBuildPhase()
+    {
+        isInConstructionMode = true;
+
+        if (previewObject == null)
+            CreatePreviewObject();
+
+        upgradeText.gameObject.SetActive(true);
+        upgradeTextBG.gameObject.SetActive(true);
+        upgradeLevelText.gameObject.SetActive(true);
+        upgradeLevelTextBG.gameObject.SetActive(true);
+
+        buildingPhaseText.gameObject.SetActive(true);
+        buildingPhaseBG.gameObject.SetActive(true);
+        StartWaveText.gameObject.SetActive(true);
+        StartWaveBG.gameObject.SetActive(true);
+
+        SetBuildingZonesVisible(true);
+    }
+
+    private void ExitBuildPhase()
+    {
+        isInConstructionMode = false;
+
+        if (previewObject != null)
+        {
+            Destroy(previewObject);
+            previewObject = null;
+        }
+
+        upgradeText.gameObject.SetActive(false);
+        upgradeTextBG.gameObject.SetActive(false);
+        upgradeLevelText.gameObject.SetActive(false);
+        upgradeLevelTextBG.gameObject.SetActive(false);
+
+        buildingPhaseText.gameObject.SetActive(false);
+        buildingPhaseBG.gameObject.SetActive(false);
+        StartWaveText.gameObject.SetActive(false);
+        StartWaveBG.gameObject.SetActive(false);
+
+        SetBuildingZonesVisible(false);
     }
 
     void CreatePreviewObject()
@@ -194,11 +245,9 @@ public class PlayerConstruction : MonoBehaviour
 
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
         TrapBase trap = trapPrefab.GetComponent<TrapBase>();
-        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
-        int currentCount = trapCounts.ContainsKey(trapPrefab) ? trapCounts[trapPrefab] : 0;
         bool hasMoney = PlayerStats.Instance.money >= trap.cost;
 
-        canPlaceObject = (colliders.Length == 0 && isInBuildingZone && hasMoney && currentCount < trapLimit);
+        canPlaceObject = (colliders.Length == 0 && isInBuildingZone && hasMoney && buildCount < maxBuildCount);
 
         foreach (Renderer renderer in previewRenderers)
         {
@@ -217,14 +266,19 @@ public class PlayerConstruction : MonoBehaviour
     {
         if (previewObject != null)
         {
-            Bounds bounds = new Bounds(previewObject.transform.position, Vector3.zero);
-            foreach (Renderer r in previewObject.GetComponentsInChildren<Renderer>())
-            {
-                bounds.Encapsulate(r.bounds);
-            }
+            BoxCollider placement = previewObject.GetComponentInChildren<BoxCollider>();
+
+            Vector3 center = placement.bounds.center;
+            Vector3 extents = placement.bounds.extents;
+
+            Collider[] colliders = Physics.OverlapBox(
+                center,
+                extents,
+                placement.transform.rotation,
+                obstructionLayer);
 
             Gizmos.color = canPlaceObject ? Color.green : Color.red;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            Gizmos.DrawWireCube(placement.center, placement.size);
         }
     }
 
@@ -239,22 +293,10 @@ public class PlayerConstruction : MonoBehaviour
 
         GameObject trapPrefab = buildableObjects[currentBuildIndex];
         TrapBase trapData = trapPrefab.GetComponent<TrapBase>();
-        int trapLimit = trapLimits.Count > currentBuildIndex ? trapLimits[currentBuildIndex] : maxBuildCount;
-
-        if (!trapCounts.ContainsKey(trapPrefab))
-            trapCounts[trapPrefab] = 0;
-
-        int currentCount = trapCounts[trapPrefab];
 
         if (trapData == null)
         {
             Debug.LogWarning("Trap prefab is missing TrapBase component.");
-            return;
-        }
-
-        if (currentCount >= trapLimit)
-        {
-            Debug.Log("Trap limit reached for this type.");
             return;
         }
 
@@ -272,24 +314,15 @@ public class PlayerConstruction : MonoBehaviour
         placedTrap.upgradeText = upgradeText;
         placedTrap.upgradeLevelText = upgradeLevelText;
 
-
-        trapCounts[trapPrefab]++;
         buildCount++;
 
+        UpdateTrapCountUI();
     }
 
     public void OnTrapDestroyed(TrapBase trap)
     {
-        foreach (GameObject prefab in trapCounts.Keys)
-        {
-            TrapBase test = prefab.GetComponent<TrapBase>();
-            if (test != null && test.GetType() == trap.GetType())
-            {
-                trapCounts[prefab] = Mathf.Max(0, trapCounts[prefab] - 1);
-                buildCount = Mathf.Max(0, buildCount - 1);
-                return;
-            }
-        }
+        buildCount = Mathf.Max(0, buildCount - 1);
+        UpdateTrapCountUI();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -331,9 +364,48 @@ public class PlayerConstruction : MonoBehaviour
 
             if (trapIcons[i] != null)
             {
-                trapIcons[i].color = unlocked ? unlockedColor : lockedColor;
+                if (unlocked)
+                {
+                    trapIcons[i].color = unlocked ? unlockedColor : lockedColor;
+                    trapIcons[i].transform.GetChild(0).gameObject.SetActive(false);
+                    trapIcons[i].transform.GetChild(1).gameObject.SetActive(false);
+                }
             }
         }
     }
 
+    private void SetBuildingZonesVisible(bool visible)
+    {
+        foreach (GameObject zone in buildingZones)
+        {
+            if (zone != null)
+                zone.SetActive(visible);
+        }
+    }
+
+    private void HandleWaveStarted(int wave)
+    {
+        if (wave % buildIncreaseEvery == 0)
+        {
+            maxBuildCount += buildIncreaseAmount;
+
+            UpdateTrapCountUI();
+
+            Debug.Log($"New build limit: {maxBuildCount}");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (HordeManager.Instance != null)
+            HordeManager.Instance.OnWaveStarted -= HandleWaveStarted;
+    }
+
+    private void UpdateTrapCountUI()
+    {
+        if (TrapCountText != null)
+        {
+            TrapCountText.text = $"Turrets: {buildCount} / {maxBuildCount}";
+        }
+    }
 }

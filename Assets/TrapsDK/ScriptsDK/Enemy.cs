@@ -14,6 +14,9 @@ public class Enemy : MonoBehaviour, IEnemy
     public float baseSpeed = 3.5f;
     public float speedModifier = 1.0f; // Multiplier
 
+    private EnemyPath assignedPath;
+    private int currentWaypointIndex = 0;
+
     private Transform player;
     private TrapBase currentTargetTrap;
     private Transform goal;
@@ -25,6 +28,9 @@ public class Enemy : MonoBehaviour, IEnemy
     [Header("Economy")]
     public int moneyReward = 25;
     private bool isDead = false;
+
+    private float laneOffset;
+    public float laneWidth = 5f;
 
     private Base baseScript;
 
@@ -42,6 +48,10 @@ public class Enemy : MonoBehaviour, IEnemy
         health *= healthMultiplier;
         damage *= damageMultiplier;
         agent.speed = baseSpeed * speedModifier * speedMultiplier; // scaled speed
+        agent.stoppingDistance = 0.25f;
+
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.LowQualityObstacleAvoidance;
+        agent.avoidancePriority = Random.Range(0, 100);
 
         Debug.Log($"[Enemy Spawned] \nHorde: {EnemyScaler.HordeCount}\n HP: {health}\n DMG: {damage}\n Speed: {agent.speed}");
     }
@@ -49,9 +59,20 @@ public class Enemy : MonoBehaviour, IEnemy
 
     void Update()
     {
+        if (CompareTag("Preview"))
+        {
+            FollowPath();
+
+            if (goal != null && Vector3.Distance(transform.position, goal.position) < attackRange)
+            {
+                Destroy(gameObject);
+            }
+
+            return;
+        }
+
         if (isStunned)
         {
-            // Don’t let Update override isStopped state
             return;
         }
 
@@ -70,9 +91,11 @@ public class Enemy : MonoBehaviour, IEnemy
         else
         {
             TrapBase[] traps = FindObjectsOfType<TrapBase>();
+
             foreach (var trap in traps)
             {
                 float d = Vector3.Distance(transform.position, trap.transform.position);
+
                 if (d < detectionRadius)
                 {
                     currentTargetTrap = trap;
@@ -80,7 +103,7 @@ public class Enemy : MonoBehaviour, IEnemy
                 }
             }
 
-            agent.SetDestination(goal.position);
+            FollowPath();
         }
 
         if (goal != null && Vector3.Distance(transform.position, goal.position) < attackRange)
@@ -140,7 +163,12 @@ public class Enemy : MonoBehaviour, IEnemy
         if (isDead) return;
 
         isDead = true;
+
         PlayerStats.Instance?.AddMoney(moneyReward);
+
+        if (!CompareTag("Preview"))
+            EnemyTracker.Instance.UnregisterEnemy();
+
         Destroy(gameObject);
     }
 
@@ -174,8 +202,66 @@ public class Enemy : MonoBehaviour, IEnemy
         agent.isStopped = false;
     }
 
+    public void SetPath(EnemyPath path)
+{
+    assignedPath = path;
+    currentWaypointIndex = 0;
 
+    laneOffset = Random.Range(-laneWidth, laneWidth);
+}
 
+    private void FollowPath()
+    {
+        if (assignedPath == null)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
+
+            return;
+        }
+
+        if (assignedPath.waypoints == null ||
+            assignedPath.waypoints.Length == 0)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
+
+            return;
+        }
+
+        if (currentWaypointIndex >= assignedPath.waypoints.Length)
+        {
+            if (goal != null)
+                agent.SetDestination(goal.position);
+
+            return;
+        }
+
+        Transform targetWaypoint = assignedPath.waypoints[currentWaypointIndex];
+
+        Vector3 pathDirection;
+
+        if (currentWaypointIndex < assignedPath.waypoints.Length - 1)
+        {
+            pathDirection = (assignedPath.waypoints[currentWaypointIndex + 1].position - targetWaypoint.position).normalized;
+        }
+        else
+        {
+            pathDirection = (goal.position - targetWaypoint.position).normalized;
+        }
+
+        Vector3 right = Vector3.Cross(Vector3.up, pathDirection).normalized;
+
+        Vector3 destination = targetWaypoint.position + right * laneOffset;
+
+        agent.SetDestination(destination);
+
+        if (!agent.pathPending  &&  agent.remainingDistance <= agent.stoppingDistance)
+        {
+            currentWaypointIndex++;
+            laneOffset = Random.Range(-laneWidth, laneWidth);
+        }
+    }
 
     public bool IsAlive() => health > 0;
     public Transform GetTransform() => transform;

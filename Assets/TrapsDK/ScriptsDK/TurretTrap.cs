@@ -13,9 +13,15 @@ public class TurretTrap : TrapBase
     private IEnemy currentTarget;
     private float lastShot;
 
+    [Header("Rotation")]
+    public Transform rotatingPart;   // Assign the turret head here
+    public float rotationSpeed = 180f; // Degrees per second
+
     protected override void Update()
     {
         base.Update();
+
+        RotateTowardsTarget();
 
         if (currentTarget != null && currentTarget.IsAlive())
         {
@@ -69,5 +75,30 @@ public class TurretTrap : TrapBase
         base.UpgradeStats();
         projectileDamage *= damageMultiplier;
         projectileSpeed *= 1.1f;
+    }
+
+    private void RotateTowardsTarget()
+    {
+        if (rotatingPart == null)
+            return;
+
+        if (currentTarget == null || !currentTarget.IsAlive())
+            return;
+
+        Vector3 direction =
+            currentTarget.GetTransform().position - rotatingPart.position;
+
+        // Ignore vertical difference if your game is played on a flat plane.
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.001f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        rotatingPart.rotation = Quaternion.RotateTowards(
+            rotatingPart.rotation,
+            targetRotation,
+            rotationSpeed * Time.deltaTime);
     }
 }

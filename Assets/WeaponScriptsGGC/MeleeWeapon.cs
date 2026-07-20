@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MeleeWeapon : BaseWeapon
 {
@@ -8,9 +9,14 @@ public class MeleeWeapon : BaseWeapon
     public Transform attackOrigin;
     public LayerMask enemyMask;
 
-    [Header("Preparación")]
+    public Slider chargeBar;
+    public float fillSpeed = 0.5f;
+    public bool isCharging;
+
+    [Header("Preparaciï¿½n")]
     public Transform weaponModel;
     public Vector3 readyOffset = new Vector3(0f, -0.1f, -0.4f);
+    public Vector3 attackOffset = new Vector3(0f, -10f, 0f);
     public float animationSpeed = 5f;
 
     private Vector3 defaultPosition;
@@ -21,27 +27,39 @@ public class MeleeWeapon : BaseWeapon
     {
         if (weaponModel != null)
             defaultPosition = weaponModel.localPosition;
+
+        chargeBar.value = 0f;
+        chargeBar.gameObject.SetActive(false);
+        isCharging = false;
     }
 
     void Update()
     {
         AnimatePreparation();
+
+        if (isCharging && chargeBar.value < chargeBar.maxValue)
+            chargeBar.value += fillSpeed * Time.deltaTime;
     }
 
     public void BeginPreparation()
     {
         isPreparing = true;
+        chargeBar.gameObject.SetActive(true);
+        isCharging = true;
     }
 
     public void CancelPreparation()
     {
         isPreparing = false;
         isReadyToAttack = false;
+        chargeBar.value = 0;
+        chargeBar.gameObject.SetActive(false);
+        isCharging = false;
     }
 
     public void ConfirmReady()
     {
-        if (isPreparing)
+        if (isPreparing && chargeBar.value == chargeBar.maxValue)
             isReadyToAttack = true;
     }
 
@@ -62,18 +80,23 @@ public class MeleeWeapon : BaseWeapon
             }
         }
 
+        chargeBar.value = 0;
         Debug.Log("Ataque melee ejecutado. Enemigos golpeados: " + hits.Length);
+        Vector3 targetPos = defaultPosition + attackOffset;
+        weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);
     }
 
     private void AnimatePreparation()
     {
         if (weaponModel == null) return;
 
+        if (isReadyToAttack) return;
+
         Vector3 targetPos = isPreparing ? defaultPosition + readyOffset : defaultPosition;
         weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);
     }
 
-    // Visualización en escena
+    // Visualizaciï¿½n en escena
     private void OnDrawGizmosSelected()
     {
         if (attackOrigin == null) return;
