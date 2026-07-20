@@ -59,7 +59,7 @@ public class MeleeWeapon : BaseWeapon
 
     public void ConfirmReady()
     {
-        if (isPreparing)
+        if (isPreparing && chargeBar.value == chargeBar.maxValue)
             isReadyToAttack = true;
     }
 
@@ -80,6 +80,7 @@ public class MeleeWeapon : BaseWeapon
             }
         }
 
+        chargeBar.value = 0;
         Debug.Log("Ataque melee ejecutado. Enemigos golpeados: " + hits.Length);
         Vector3 targetPos = defaultPosition + attackOffset;
         weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, targetPos, Time.deltaTime * animationSpeed);

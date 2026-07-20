@@ -30,9 +30,17 @@ public class PlayerConstruction : MonoBehaviour
 
     private Dictionary<GameObject, int> trapCounts = new Dictionary<GameObject, int>();
 
+    [Header("UI Text")]
     [SerializeField] private TextMeshProUGUI upgradeText;
     [SerializeField] private TextMeshProUGUI upgradeLevelText;
     [SerializeField] private TextMeshProUGUI TrapCountText;
+    [SerializeField] private Image upgradeTextBG;
+    [SerializeField] private Image upgradeLevelTextBG;
+
+    [SerializeField] private TextMeshProUGUI buildingPhaseText;
+    [SerializeField] private TextMeshProUGUI StartWaveText;
+    [SerializeField] private Image buildingPhaseBG;
+    [SerializeField] private Image StartWaveBG;
 
     [Header("Trap UI Icons")]
     public List<Image> trapIcons;
@@ -101,7 +109,14 @@ public class PlayerConstruction : MonoBehaviour
             CreatePreviewObject();
 
         upgradeText.gameObject.SetActive(true);
+        upgradeTextBG.gameObject.SetActive(true);
         upgradeLevelText.gameObject.SetActive(true);
+        upgradeLevelTextBG.gameObject.SetActive(true);
+
+        buildingPhaseText.gameObject.SetActive(true);
+        buildingPhaseBG.gameObject.SetActive(true);
+        StartWaveText.gameObject.SetActive(true);
+        StartWaveBG.gameObject.SetActive(true);
 
         SetBuildingZonesVisible(true);
     }
@@ -117,7 +132,14 @@ public class PlayerConstruction : MonoBehaviour
         }
 
         upgradeText.gameObject.SetActive(false);
+        upgradeTextBG.gameObject.SetActive(false);
         upgradeLevelText.gameObject.SetActive(false);
+        upgradeLevelTextBG.gameObject.SetActive(false);
+
+        buildingPhaseText.gameObject.SetActive(false);
+        buildingPhaseBG.gameObject.SetActive(false);
+        StartWaveText.gameObject.SetActive(false);
+        StartWaveBG.gameObject.SetActive(false);
 
         SetBuildingZonesVisible(false);
     }

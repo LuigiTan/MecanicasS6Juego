@@ -184,21 +184,25 @@ public abstract class TrapBase : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
             OnEnemyEnter(other);
-        else if (other.CompareTag("Player"))
-        {
-            playerNearby = true;
-        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Enemy"))
             OnEnemyExit(other);
-        else if (other.CompareTag("Player"))
+    }
+
+    public void SetPlayerNearby(bool nearby)
+    {
+        playerNearby = nearby;
+
+        if (!nearby)
         {
-            playerNearby = false;
-            if (upgradeText != null) upgradeText.text = "";
-            if (upgradeLevelText != null) upgradeLevelText.text = "";
+            if (upgradeText != null)
+                upgradeText.text = "";
+
+            if (upgradeLevelText != null)
+                upgradeLevelText.text = "";
         }
     }
 
